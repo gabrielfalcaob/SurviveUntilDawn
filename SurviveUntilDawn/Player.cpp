@@ -9,10 +9,14 @@
 //
 **********************************************************************************/
 
-#include "Player.h" 
+#include "Player.h"
 #include "Missile.h"
 #include "SurviveUntilDawn.h"
 #include "Hud.h"
+#include "Goblin.h"
+#include "Ogre.h"
+#include "Wizard.h"
+#include "Dragon.h"
 
 Image * Player::missile = nullptr;
 
@@ -312,7 +316,30 @@ void Player::Update()
         attackTimer.Start();
         state = ATTACK;
         animAttack->Restart();
-        // TODO: Criar hitbox de dano com base em facingRight
+
+        // atingir inimigos dentro do alcance e na dire��o correta
+        SurviveUntilDawn::scene->Begin();
+        Object* obj = SurviveUntilDawn::scene->Next();
+        while (obj != nullptr)
+        {
+            uint id = obj->Type();
+            if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
+            {
+                float dist = Point::Distance(Point(x, y), Point(obj->X(), obj->Y()));
+                if (dist < 65.0f)
+                {
+                    bool enemyAhead = facingRight ? (obj->X() >= x) : (obj->X() <= x);
+                    if (enemyAhead)
+                    {
+                        if (id == GOBLIN)    ((Goblin*)obj)->Kill();
+                        else if (id == OGRE)   ((Ogre*)obj)->Kill();
+                        else if (id == WIZARD) ((Wizard*)obj)->Kill();
+                        else if (id == DRAGON) ((Dragon*)obj)->Kill();
+                    }
+                }
+            }
+            obj = SurviveUntilDawn::scene->Next();
+        }
     }
 
     // seleciona anima��o baseada no estado

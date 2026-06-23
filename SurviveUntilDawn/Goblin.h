@@ -19,15 +19,20 @@
 #include "Sprite.h"
 #include "Vector.h"
 #include "Player.h"
+#include "Animation.h"
+#include "TileSet.h"
 
 // ---------------------------------------------------------------------------------
 
 class Goblin : public Object
 {
 private:
-    Sprite * sprite;                            // sprite do objeto
     Player * player;                            // ponteiro para jogador
     Vector speed;                               // velocidade e dire��o
+
+    TileSet * tsRun;                            // folha de sprites corrida
+    Animation * animRun;                        // anima��o corrida
+    uint seqRun[6] = { 0,1,2,3,4,5 };          // sequ�ncia corrida
 
 public:
     Goblin(float pX, float pY, Player * p);     // construtor
@@ -38,11 +43,6 @@ public:
     void Update();                              // atualiza��o
     void Draw();                                // desenho
 };
-
-// ---------------------------------------------------------------------------------
-
-inline void Goblin::Draw()
-{ sprite->Draw(x, y, Layer::LOWER, scale, rotation); }
 
 // ---------------------------------------------------------------------------------
 

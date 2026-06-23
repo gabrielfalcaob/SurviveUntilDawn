@@ -23,7 +23,12 @@
 Wizard::Wizard(float pX, float pY, Player* p)
 {
     player = p;
-    sprite = new Sprite(SurviveUntilDawn::wizard);
+
+    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    animRun = new Animation(tsRun, 0.100f, true);
+    animRun->Add(0, seqRun, 6);
+    animRun->Select(0);
+
     BBox(new Circle(20.0f));
     speed.RotateTo(0.0f);
     speed.ScaleTo(0.0f);
@@ -39,7 +44,8 @@ Wizard::Wizard(float pX, float pY, Player* p)
 
 Wizard::~Wizard()
 {
-    delete sprite;
+    delete animRun;
+    delete tsRun;
 
     // decrementa contador
     --Hud::wizards;
@@ -109,6 +115,16 @@ void Wizard::Update()
         MoveTo(game->Width() - 50, y);
     if (y > game->Height() - 50)
         MoveTo(x, game->Height() - 50);
+
+    // atualiza anima��o
+    animRun->NextFrame();
+}
+
+// -------------------------------------------------------------------------------
+
+void Wizard::Draw()
+{
+    animRun->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
 }
 
 // -------------------------------------------------------------------------------

@@ -19,16 +19,21 @@
 #include "Sprite.h"
 #include "Vector.h"
 #include "Player.h"
+#include "Animation.h"
+#include "TileSet.h"
 
 // ---------------------------------------------------------------------------------
 
 class Wizard : public Object
 {
 private:
-    Sprite * sprite;                            // sprite do objeto
     Player * player;                            // ponteiro para jogador
     Vector speed;                               // velocidade e dire��o
     float factor;                               // fator de escala
+
+    TileSet * tsRun;                            // folha de sprites corrida
+    Animation * animRun;                        // anima��o corrida
+    uint seqRun[6] = { 0,1,2,3,4,5 };          // sequ�ncia corrida
 
 public:
     Wizard(float pX, float pY, Player * p);     // construtor
@@ -39,11 +44,6 @@ public:
     void Update();                              // atualiza��o
     void Draw();                                // desenho
 };
-
-// ---------------------------------------------------------------------------------
-
-inline void Wizard::Draw()
-{ sprite->Draw(x, y, Layer::LOWER, scale, rotation); }
 
 // ---------------------------------------------------------------------------------
 

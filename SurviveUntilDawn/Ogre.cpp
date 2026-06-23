@@ -21,7 +21,10 @@
 
 Ogre::Ogre(float pX, float pY, float ang)
 {
-    sprite = new Sprite(SurviveUntilDawn::ogre);
+    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    animRun = new Animation(tsRun, 0.100f, true);
+    animRun->Add(0, seqRun, 6);
+    animRun->Select(0);
 
     // ajusta o vetor velocidade
     speed.RotateTo(ang);
@@ -58,7 +61,8 @@ Ogre::Ogre(float pX, float pY, float ang)
 
 Ogre::~Ogre()
 {
-    delete sprite;
+    delete animRun;
+    delete tsRun;
     delete tail;
 
     // decrementa contagem
@@ -118,13 +122,16 @@ void Ogre::Update()
     Hud::particles -= tailCount;
     tailCount = tail->Size();
     Hud::particles += tailCount;
+
+    // atualiza anima��o
+    animRun->NextFrame();
 }
 
 // ---------------------------------------------------------------------------------
 
 void Ogre::Draw()
 {
-    sprite->Draw(x, y, Layer::LOWER, scale, rotation);
+    animRun->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
     tail->Draw(Layer::LOWER, 1.0f);
 }
 

@@ -19,16 +19,21 @@
 #include "Sprite.h"
 #include "Vector.h"
 #include "Player.h"
+#include "Animation.h"
+#include "TileSet.h"
 
 // ---------------------------------------------------------------------------------
 
 class Ogre : public Object
 {
 private:
-    Sprite * sprite;                        // sprite do objeto
     Particles * tail;                       // calda do objeto
     uint tailCount;                         // quantidade de part�culas da calda
     Vector speed;                           // velocidade e dire��o
+
+    TileSet * tsRun;                        // folha de sprites corrida
+    Animation * animRun;                    // anima��o corrida
+    uint seqRun[6] = { 0,1,2,3,4,5 };      // sequ�ncia corrida
 
 public:
     Ogre(float pX, float pY, float ang);    // construtor

@@ -23,8 +23,13 @@
 Goblin::Goblin(float pX, float pY, Player * p)
 {
     player = p;
-    sprite = new Sprite(SurviveUntilDawn::goblin);
-    BBox(new Circle(18.0f));
+
+    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    animRun = new Animation(tsRun, 0.100f, true);
+    animRun->Add(0, seqRun, 6);
+    animRun->Select(0);
+
+    BBox(new Circle(20.0f));
 
     speed.RotateTo(0);
     speed.ScaleTo(2.0f);
@@ -40,7 +45,8 @@ Goblin::Goblin(float pX, float pY, Player * p)
 
 Goblin::~Goblin()
 {
-    delete sprite;
+    delete animRun;
+    delete tsRun;
 
     // decrementa contador
     --Hud::goblins;
@@ -85,6 +91,16 @@ void Goblin::Update()
 
     // movimenta objeto pelo seu vetor velocidade
     Translate(speed.XComponent() * 60.0f * gameTime, -speed.YComponent() * 60.0f * gameTime);
+
+    // atualiza anima��o
+    animRun->NextFrame();
+}
+
+// -------------------------------------------------------------------------------
+
+void Goblin::Draw()
+{
+    animRun->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
 }
 
 // -------------------------------------------------------------------------------

@@ -22,7 +22,12 @@
 Dragon::Dragon(float pX, float pY, Player * p)
 {
     player = p;
-    sprite = new Sprite(SurviveUntilDawn::dragon);
+
+    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    animRun = new Animation(tsRun, 0.100f, true);
+    animRun->Add(0, seqRun, 6);
+    animRun->Select(0);
+
     BBox(new Circle(20.0f));
     speed.RotateTo(0.0f);
     speed.ScaleTo(0.0f);
@@ -40,7 +45,8 @@ Dragon::Dragon(float pX, float pY, Player * p)
 
 Dragon::~Dragon()
 {
-    delete sprite;
+    delete animRun;
+    delete tsRun;
 
     // decrementa contador
     --Hud::dragons;
@@ -109,6 +115,16 @@ void Dragon::Update()
         MoveTo(game->Width() - 50, y);
     if (y > game->Height() - 50)
         MoveTo(x, game->Height() - 50);
+
+    // atualiza anima��o
+    animRun->NextFrame();
+}
+
+// -------------------------------------------------------------------------------
+
+void Dragon::Draw()
+{
+    animRun->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
 }
 
 // -------------------------------------------------------------------------------
