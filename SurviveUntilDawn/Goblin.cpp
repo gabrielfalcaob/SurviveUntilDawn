@@ -1,11 +1,11 @@
 /**********************************************************************************
-// Goblin (C�digo Fonte)
+// Goblin (Código Fonte)
 //
-// Cria��o:     10 Out 2012
-// Atualiza��o: 11 Nov 2021
+// Criação:     10 Out 2012
+// Atualização: 11 Nov 2021
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Objeto faz um persegui��o direta
+// Descrição:   Objeto faz um perseguição direta
 //
 **********************************************************************************/
 
@@ -17,6 +17,9 @@
 #include "XPOrb.h"
 #include "Magnet.h"
 #include "Bomb.h"
+#include "HealthDrop.h"
+
+#include <cstdlib>
 
 // ---------------------------------------------------------------------------------
 
@@ -57,14 +60,17 @@ Goblin::~Goblin()
 void Goblin::Kill()
 {
     SurviveUntilDawn::scene->Add(new Explosion(x, y), STATIC);
-    SurviveUntilDawn::scene->Add(new XPOrb(x, y, 10), MOVING);
 
-    // TODO: balancear
-    int chance = Random{ 1, 100 }.Rand();
-    if (chance <= 3)
-        SurviveUntilDawn::scene->Add(new Magnet(x, y), MOVING);
-    else if (chance <= 6)
+    // rolagem de drops
+    int roll = rand() % 100;
+    if (roll < 1)
         SurviveUntilDawn::scene->Add(new Bomb(x, y), MOVING);
+    else if (roll < 2)
+        SurviveUntilDawn::scene->Add(new Magnet(x, y), MOVING);
+    else if (roll < 5)
+        SurviveUntilDawn::scene->Add(new HealthDrop(x, y), MOVING);
+    else
+        SurviveUntilDawn::scene->Add(new XPOrb(x, y), MOVING);
 
     SurviveUntilDawn::scene->Delete(this, MOVING);
 }
@@ -73,11 +79,28 @@ void Goblin::Kill()
 
 void Goblin::OnCollision(Object * obj)
 {
-    if (obj->Type() == MISSILE)
+    if (obj->Type() == PLAYER)
+    {
+        ((Player*)obj)->TakeDamage(1);
+    }
+    else if (obj->Type() == MISSILE)
     {
         SurviveUntilDawn::scene->Delete(obj, STATIC);
         SurviveUntilDawn::audio->Play(EXPLODE);
         Kill();
+    }
+
+    // separação de inimigos para evitar sobreposição
+    uint id = obj->Type();
+    if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
+    {
+        float dx = x - obj->X();
+        float dy = y - obj->Y();
+        if (dx == 0.0f && dy == 0.0f)
+            dx = 1.0f; // evita divisão por zero se perfeitamente sobreposto
+        float length = sqrt(dx * dx + dy * dy);
+        if (length > 0.0f)
+            Translate((dx / length) * 1.5f, (dy / length) * 1.5f);
     }
 }
 
@@ -85,14 +108,14 @@ void Goblin::OnCollision(Object * obj)
 
 void Goblin::Update()
 {
-    // ajusta �ngulo do vetor
+    // ajusta ângulo do vetor
     speed.RotateTo(Line::Angle(Point(x, y), Point(player->X(), player->Y())));
     Rotate(200 * gameTime);
 
     // movimenta objeto pelo seu vetor velocidade
     Translate(speed.XComponent() * 60.0f * gameTime, -speed.YComponent() * 60.0f * gameTime);
 
-    // atualiza anima��o
+    // atualiza animação
     animRun->NextFrame();
 }
 

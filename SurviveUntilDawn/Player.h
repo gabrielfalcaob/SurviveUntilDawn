@@ -51,7 +51,19 @@ private:
 
     Timer attackTimer;                  // timer do ataque autom�tico
     float attackCooldown = 1.5f;        // cooldown entre ataques
-    
+    Timer animLockTimer;                // timer de travamento da anima��o
+    float attackDuration = 0.4f;        // dura��o da anima��o de ataque
+
+    int hp = 5;                         // vida atual
+    int maxHp = 10;                     // vida m�xima
+    bool isImmortal = false;            // modo Deus ativo
+    Timer invulnTimer;                  // timer de invulnerabilidade
+    float invulnTime = 1.0f;            // dura��o da invulnerabilidade
+
+    bool magnetActive = false;          // im� ativo
+    Timer magnetTimer;                  // timer do im�
+    float magnetDuration = 3.0f;        // dura��o do im� (segundos)
+
     Controller * gamepad;               // leitura do controle
     bool gamepadOn;                     // controle esta ligado
     
@@ -73,6 +85,10 @@ public:
     bool KeysTimed(bool pressed, float time);
 
     void Move(Vector && v);             // movimenta jogador
+    void TakeDamage(int amount);        // recebe dano
+    void Heal(int amount);              // cura o jogador
+    void ActivateMagnet();              // ativa o im�
+    bool IsMagnetActive();              // retorna se o im� est� ativo
     void OnCollision(Object * obj);     // resolucao de colisao
     void Update();                      // atualiza��o
     void Draw();                        // desenho

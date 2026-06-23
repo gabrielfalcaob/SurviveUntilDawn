@@ -14,6 +14,7 @@
 #include "SurviveUntilDawn.h"
 #include "Engine.h"
 #include "Delay.h"
+#include "Spawner.h"
 
 // ------------------------------------------------------------------------------
 
@@ -66,6 +67,7 @@ void SurviveUntilDawn::Init()
 
     // adiciona objetos na cena
     scene->Add(player, MOVING);
+    scene->Add(new Spawner(player), STATIC);
     scene->Add(new Delay(), STATIC);
 
     // ----------------------
@@ -91,7 +93,7 @@ void SurviveUntilDawn::Update()
     if (window->KeyDown(VK_ESCAPE))
         window->Close();
 
-    // atualiza cena e calcula colis�es
+    // atualiza cena e detecta colisões
     scene->Update();
     scene->CollisionDetection();
 

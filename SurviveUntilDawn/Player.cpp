@@ -13,10 +13,7 @@
 #include "Missile.h"
 #include "SurviveUntilDawn.h"
 #include "Hud.h"
-#include "Goblin.h"
-#include "Ogre.h"
-#include "Wizard.h"
-#include "Dragon.h"
+#include "SwordSlash.h"
 
 Image * Player::missile = nullptr;
 
@@ -81,6 +78,7 @@ Player::Player()
     start = 0;
     timer.Start();
     attackTimer.Start();
+    invulnTimer.Start();
 }
 
 // -------------------------------------------------------------------------------
@@ -102,7 +100,7 @@ Player::~Player()
 
 void Player::OnCollision(Object * obj)
 {
-    // TODO: Criar hitbox de dano em quadros espec�ficos do estado ATTACK, com base em facingRight
+    // o dano � aplicado diretamente pelo inimigo ao colidir com o jogador
 }
 
 // -------------------------------------------------------------------------------
@@ -168,6 +166,50 @@ void Player::Move(Vector && v)
     // limita velocidade m�xima
     if (speed.Magnitude() > 10.0f)
         speed.ScaleTo(10.0f);
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::TakeDamage(int amount)
+{
+    if (isImmortal)
+        return;
+
+    if (!invulnTimer.Elapsed(invulnTime))
+        return;
+
+    hp -= amount;
+    invulnTimer.Start();
+
+    if (hp <= 0)
+    {
+        // TODO: Game Over trigger
+        hp = 0;
+    }
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::Heal(int amount)
+{
+    hp += amount;
+    if (hp > maxHp)
+        hp = maxHp;
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::ActivateMagnet()
+{
+    magnetActive = true;
+    magnetTimer.Start();
+}
+
+// -------------------------------------------------------------------------------
+
+bool Player::IsMagnetActive()
+{
+    return magnetActive;
 }
 
 // -------------------------------------------------------------------------------
@@ -298,6 +340,20 @@ void Player::Update()
     }
 
     // -----------------
+    // God Mode
+    // -----------------
+
+    if (window->KeyPress('I'))
+        isImmortal = !isImmortal;
+
+    // -----------------
+    // Magnet
+    // -----------------
+
+    if (magnetActive && magnetTimer.Elapsed(magnetDuration))
+        magnetActive = false;
+
+    // -----------------
     // Anima��o
     // -----------------
 
@@ -307,55 +363,38 @@ void Player::Update()
     else if (speed.XComponent() < -0.1f)
         facingRight = false;
 
-    // define estado base pelo movimento
-    state = (speed.Magnitude() > 0.1f) ? RUN : IDLE;
-
-    // ataque autom�tico (survivor-style)
-    if (attackTimer.Elapsed(attackCooldown))
+    // m�quina de estados da anima��o
+    if (state == ATTACK)
     {
-        attackTimer.Start();
-        state = ATTACK;
-        animAttack->Restart();
-
-        // atingir inimigos dentro do alcance e na dire��o correta
-        SurviveUntilDawn::scene->Begin();
-        Object* obj = SurviveUntilDawn::scene->Next();
-        while (obj != nullptr)
-        {
-            uint id = obj->Type();
-            if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
-            {
-                float dist = Point::Distance(Point(x, y), Point(obj->X(), obj->Y()));
-                if (dist < 65.0f)
-                {
-                    bool enemyAhead = facingRight ? (obj->X() >= x) : (obj->X() <= x);
-                    if (enemyAhead)
-                    {
-                        if (id == GOBLIN)    ((Goblin*)obj)->Kill();
-                        else if (id == OGRE)   ((Ogre*)obj)->Kill();
-                        else if (id == WIZARD) ((Wizard*)obj)->Kill();
-                        else if (id == DRAGON) ((Dragon*)obj)->Kill();
-                    }
-                }
-            }
-            obj = SurviveUntilDawn::scene->Next();
-        }
-    }
-
-    // seleciona anima��o baseada no estado
-    switch (state)
-    {
-    case ATTACK:
-        currentAnim = animAttack;
-        if (animAttack->Inactive())
+        // mant�m o ataque at� o fim da anima��o
+        if (animLockTimer.Elapsed(attackDuration))
             state = IDLE;
-        break;
-    case RUN:
-        currentAnim = animRun;
-        break;
-    default:
-        currentAnim = animIdle;
-        break;
+    }
+    else
+    {
+        // ataque autom�tico (survivor-style)
+        if (attackTimer.Elapsed(attackCooldown))
+        {
+            attackTimer.Start();
+            animLockTimer.Start();
+            state = ATTACK;
+            currentAnim = animAttack;
+            animAttack->Restart();
+
+            // spawna hitbox f�sica do golpe
+            float slashX = facingRight ? x + 40.0f : x - 40.0f;
+            SurviveUntilDawn::scene->Add(new SwordSlash(slashX, y, facingRight), MOVING);
+        }
+        else if (speed.Magnitude() > 0.1f)
+        {
+            state = RUN;
+            currentAnim = animRun;
+        }
+        else
+        {
+            state = IDLE;
+            currentAnim = animIdle;
+        }
     }
 
     currentAnim->NextFrame();

@@ -19,11 +19,17 @@
 
 class Bomb : public Pickup
 {
-public:
-    Bomb(float pX, float pY);                       // construtor
-    ~Bomb();                                        // destrutor
+private:
+    bool isExploding = false;           // bomba est� explodindo
 
-    void OnCollect();                               // coleta da bomba
+public:
+    Bomb(float pX, float pY);           // construtor
+    ~Bomb();                            // destrutor
+
+    void OnCollect();                   // coleta (vazio — usa OnCollision)
+    void OnCollision(Object* obj);      // colis�o com o jogador
+    void Update();                      // explos�o e destrui��o
+    void Draw();                        // desenho (esconde ao explodir)
 };
 
 // ---------------------------------------------------------------------------------

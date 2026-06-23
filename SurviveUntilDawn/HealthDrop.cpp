@@ -1,47 +1,44 @@
 /**********************************************************************************
-// Magnet (Código Fonte)
+// HealthDrop (Código Fonte)
 //
-// Criação:     21 Jun 2026
+// Criação:     23 Jun 2026
 // Compilador:  Visual C++ 2022
 //
-// Descrição:   Atrai todos os orbs de XP na tela por 3 segundos
+// Descrição:   Item coletável que cura o jogador
 //
 **********************************************************************************/
 
-#include "Magnet.h"
+#include "HealthDrop.h"
 #include "SurviveUntilDawn.h"
 #include "Player.h"
 
 // ---------------------------------------------------------------------------------
 
-Magnet::Magnet(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Blue.png"))
+HealthDrop::HealthDrop(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Orange.png"))
 {
-    type = MAGNET;
+    type = HEALTHDROP;
     BBox(new Circle(10.0f));
 }
 
 // ---------------------------------------------------------------------------------
 
-Magnet::~Magnet()
+HealthDrop::~HealthDrop()
 {
 }
 
 // -------------------------------------------------------------------------------
 
-void Magnet::OnCollect()
+void HealthDrop::OnCollect()
 {
-    // o im� usa OnCollision personalizado — OnCollect vazio
+    SurviveUntilDawn::player->Heal(1);
 }
 
 // -------------------------------------------------------------------------------
 
-void Magnet::OnCollision(Object* obj)
+void HealthDrop::Draw()
 {
-    if (obj->Type() == PLAYER)
-    {
-        ((Player*)obj)->ActivateMagnet();
-        SurviveUntilDawn::scene->Delete(this, MOVING);
-    }
+    if (sprite)
+        sprite->Draw(x, y, Layer::LOWER, scale, rotation);
 }
 
 // -------------------------------------------------------------------------------

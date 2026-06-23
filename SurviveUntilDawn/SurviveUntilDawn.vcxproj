@@ -237,6 +237,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Goblin.cpp" />
+    <ClCompile Include="HealthDrop.cpp" />
     <ClCompile Include="Ogre.cpp" />
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="SurviveUntilDawn.cpp" />
@@ -265,6 +266,8 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Wizard.cpp" />
     <ClCompile Include="XPOrb.cpp" />
+    <ClCompile Include="Spawner.cpp" />
+    <ClCompile Include="SwordSlash.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -279,6 +282,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Goblin.h" />
+    <ClInclude Include="HealthDrop.h" />
     <ClInclude Include="Ogre.h" />
     <ClInclude Include="SurviveUntilDawn.h" />
     <ClInclude Include="Graphics.h" />
@@ -296,6 +300,8 @@
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Spawner.h" />
+    <ClInclude Include="SwordSlash.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileSet.h" />

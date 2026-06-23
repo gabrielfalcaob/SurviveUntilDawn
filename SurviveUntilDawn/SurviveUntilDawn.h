@@ -27,7 +27,7 @@ enum Ids
 {
     PLAYER, MISSILE, WALLHIT, WIZARD, DRAGON, GOBLIN, OGRE,
     THEME, START, FIRE, EXPLODE, HITWALL, EXPLOSION,
-    XPORB, MAGNET, BOMB, PICKUP_SFX
+    XPORB, MAGNET, BOMB, PICKUP_SFX, SWORDSLASH, HEALTHDROP
 };
 
 // ------------------------------------------------------------------------------

@@ -23,11 +23,12 @@ private:
     uint amount;                                // quantidade de XP
 
 public:
-    XPOrb(float pX, float pY, uint val);        // construtor
+    XPOrb(float pX, float pY, uint val = 10);       // construtor
     ~XPOrb();                                   // destrutor
 
     void OnCollect();                           // coleta do orb
     void Update();                              // atualiza��o
+    void Draw();                                // desenho
 };
 
 // ---------------------------------------------------------------------------------

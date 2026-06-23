@@ -1,10 +1,10 @@
 /**********************************************************************************
-// Bomb (C�digo Fonte)
+// Bomb (Código Fonte)
 //
-// Cria��o:     21 Jun 2026
+// Criação:     21 Jun 2026
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Elimina todos os inimigos na tela
+// Descrição:   Elimina todos os inimigos na tela
 //
 **********************************************************************************/
 
@@ -14,13 +14,13 @@
 #include "Dragon.h"
 #include "Goblin.h"
 #include "Ogre.h"
-#include <vector>
 
 // ---------------------------------------------------------------------------------
 
-Bomb::Bomb(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Bomb.png"))
+Bomb::Bomb(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Magenta.png"))
 {
     type = BOMB;
+    BBox(new Circle(10.0f));
 }
 
 // ---------------------------------------------------------------------------------
@@ -33,26 +33,57 @@ Bomb::~Bomb()
 
 void Bomb::OnCollect()
 {
-    SurviveUntilDawn::scene->Begin();
-    Object* obj = SurviveUntilDawn::scene->Next();
+    // a bomba usa OnCollision personalizado — OnCollect vazio
+}
 
-    while (obj != nullptr)
+// -------------------------------------------------------------------------------
+
+void Bomb::OnCollision(Object* obj)
+{
+    if (obj->Type() == PLAYER)
     {
-        uint id = obj->Type();
-
-        // Verifica se é um dos monstros
-        if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
-        {
-            // Como a IA criou o método Kill(), chame-o aqui
-            // (Você pode precisar fazer um cast para a classe base dos inimigos ou testar um por um)
-            if (id == GOBLIN) ((Goblin*)obj)->Kill();
-            else if (id == OGRE) ((Ogre*)obj)->Kill();
-            else if (id == WIZARD) ((Wizard*)obj)->Kill();
-            else if (id == DRAGON) ((Dragon*)obj)->Kill();
-        }
-
-        obj = SurviveUntilDawn::scene->Next();
+        isExploding = true;
+        MoveTo(-9999.0f, -9999.0f); // move para fora da tela
     }
+}
+
+// -------------------------------------------------------------------------------
+
+void Bomb::Update()
+{
+    if (isExploding)
+    {
+        // varre a cena e elimina inimigos num raio de 600px do jogador
+        SurviveUntilDawn::scene->Begin();
+        Object* obj = SurviveUntilDawn::scene->Next();
+        while (obj != nullptr)
+        {
+            uint id = obj->Type();
+            if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
+            {
+                float dist = Point::Distance(
+                    Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y()),
+                    Point(obj->X(), obj->Y()));
+                if (dist < 600.0f)
+                {
+                    if (id == GOBLIN) ((Goblin*)obj)->Kill();
+                    else if (id == OGRE) ((Ogre*)obj)->Kill();
+                    else if (id == WIZARD) ((Wizard*)obj)->Kill();
+                    else if (id == DRAGON) ((Dragon*)obj)->Kill();
+                }
+            }
+            obj = SurviveUntilDawn::scene->Next();
+        }
+        SurviveUntilDawn::scene->Delete(this, MOVING);
+    }
+}
+
+// -------------------------------------------------------------------------------
+
+void Bomb::Draw()
+{
+    if (!isExploding && sprite)
+        sprite->Draw(x, y, Layer::LOWER, scale, rotation);
 }
 
 // -------------------------------------------------------------------------------

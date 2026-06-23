@@ -126,6 +126,9 @@
     <ClCompile Include="Goblin.cpp">
       <Filter>Game\Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="HealthDrop.cpp">
+      <Filter>Game\Arquivos de Origem</Filter>
+    </ClCompile>
     <ClCompile Include="Ogre.cpp">
       <Filter>Game\Arquivos de Origem</Filter>
     </ClCompile>
@@ -150,10 +153,22 @@
     <ClCompile Include="XPOrb.cpp">
       <Filter>Game\Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Spawner.cpp">
+      <Filter>Game\Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordSlash.cpp">
+      <Filter>Game\Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
       <Filter>Engine\Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Spawner.h">
+      <Filter>Game\Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordSlash.h">
+      <Filter>Game\Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>Engine\Arquivos de Cabeçalho</Filter>
@@ -255,6 +270,9 @@
       <Filter>Game\Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Goblin.h">
+      <Filter>Game\Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthDrop.h">
       <Filter>Game\Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Ogre.h">
