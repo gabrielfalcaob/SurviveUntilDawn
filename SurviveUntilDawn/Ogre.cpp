@@ -1,21 +1,26 @@
 /**********************************************************************************
-// Ogre (C�digo Fonte)
+// Ogre (Código Fonte)
 //
-// Cria��o:     05 Ago 2019
-// Atualiza��o: 11 Nov 2021
+// Criação:     05 Ago 2019
+// Atualização: 23 Jun 2026
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Objeto faz movimento retil�neo
+// Descrição:   Inimigo tanque — persegue o jogador devagar com 5 de vida
 //
 **********************************************************************************/
 
 #include "SurviveUntilDawn.h"
 #include "Ogre.h"
 #include "Random.h"
+#include "Hud.h"
 #include "Explosion.h"
 #include "XPOrb.h"
 #include "Magnet.h"
 #include "Bomb.h"
+#include "HealthDrop.h"
+
+#include <cmath>
+#include <cstdlib>
 
 // ---------------------------------------------------------------------------------
 
@@ -26,34 +31,32 @@ Ogre::Ogre(float pX, float pY, float ang)
     animRun->Add(0, seqRun, 6);
     animRun->Select(0);
 
-    // ajusta o vetor velocidade
-    speed.RotateTo(ang);
-    speed.ScaleTo(400);
-    RotateTo(-speed.Angle());
     BBox(new Circle(20.0f));
+
+    speed.RotateTo(ang);
+    speed.ScaleTo(2.0f);
+    RotateTo(-speed.Angle());
     MoveTo(pX, pY);
     type = OGRE;
 
-    // configura��o do emissor de part�culas
+    // configuração do emissor de partículas
     Generator emitter;
-    emitter.imgFile = "Resources/Spark.png";    // arquivo de imagem
-    emitter.angle = speed.Angle() + 180;        // �ngulo base do emissor
-    emitter.spread = 5;                         // espalhamento em graus
-    emitter.lifetime = 0.4f;                    // tempo de vida em segundos
-    emitter.frequency = 0.010f;                 // tempo entre gera��o de novas part�culas
-    emitter.percentToDim = 0.8f;                // desaparece ap�s 60% da vida
-    emitter.minSpeed = 100.0f;                  // velocidade m�nima das part�culas
-    emitter.maxSpeed = 200.0f;                  // velocidade m�xima das part�culas
-    emitter.color.r = 1.0f;                     // componente Red da part�cula
-    emitter.color.g = 0.5;                      // componente Green da part�cula
-    emitter.color.b = 0.0f;                     // componente Blue da part�cula
-    emitter.color.a = 1.0f;                     // transpar�ncia da part�cula
+    emitter.imgFile = "Resources/Spark.png";
+    emitter.angle = speed.Angle() + 180;
+    emitter.spread = 5;
+    emitter.lifetime = 0.4f;
+    emitter.frequency = 0.010f;
+    emitter.percentToDim = 0.8f;
+    emitter.minSpeed = 100.0f;
+    emitter.maxSpeed = 200.0f;
+    emitter.color.r = 1.0f;
+    emitter.color.g = 0.5f;
+    emitter.color.b = 0.0f;
+    emitter.color.a = 1.0f;
 
-    // cria sistema de part�culas
     tail = new Particles(emitter);
     tailCount = 0;
 
-    // incrementa contagem
     ++Hud::ogres;
 }
 
@@ -65,7 +68,6 @@ Ogre::~Ogre()
     delete tsRun;
     delete tail;
 
-    // decrementa contagem
     Hud::particles -= tailCount;
     --Hud::ogres;
 }
@@ -74,15 +76,22 @@ Ogre::~Ogre()
 
 void Ogre::Kill()
 {
-    SurviveUntilDawn::scene->Add(new Explosion(x, y), STATIC);
-    SurviveUntilDawn::scene->Add(new XPOrb(x, y, 20), MOVING);
+    hp--;
+    if (hp > 0)
+        return;
 
-    // TODO: balancear
-    int chance = Random{ 1, 100 }.Rand();
-    if (chance <= 3)
-        SurviveUntilDawn::scene->Add(new Magnet(x, y), MOVING);
-    else if (chance <= 6)
+    SurviveUntilDawn::scene->Add(new Explosion(x, y), STATIC);
+
+    // rolagem de drops
+    int roll = rand() % 100;
+    if (roll < 1)
         SurviveUntilDawn::scene->Add(new Bomb(x, y), MOVING);
+    else if (roll < 2)
+        SurviveUntilDawn::scene->Add(new Magnet(x, y), MOVING);
+    else if (roll < 5)
+        SurviveUntilDawn::scene->Add(new HealthDrop(x, y), MOVING);
+    else
+        SurviveUntilDawn::scene->Add(new XPOrb(x, y), MOVING);
 
     SurviveUntilDawn::scene->Delete(this, MOVING);
 }
@@ -91,11 +100,28 @@ void Ogre::Kill()
 
 void Ogre::OnCollision(Object * obj)
 {
-    if (obj->Type() == MISSILE)
+    if (obj->Type() == PLAYER)
+    {
+        ((Player*)obj)->TakeDamage(1);
+    }
+    else if (obj->Type() == MISSILE)
     {
         SurviveUntilDawn::scene->Delete(obj, STATIC);
         SurviveUntilDawn::audio->Play(EXPLODE);
         Kill();
+    }
+
+    // separação de inimigos para evitar sobreposição
+    uint id = obj->Type();
+    if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
+    {
+        float dx = x - obj->X();
+        float dy = y - obj->Y();
+        if (dx == 0.0f && dy == 0.0f)
+            dx = 1.0f;
+        float length = sqrt(dx * dx + dy * dy);
+        if (length > 0.0f)
+            Translate((dx / length) * 1.5f, (dy / length) * 1.5f);
     }
 }
 
@@ -103,16 +129,11 @@ void Ogre::OnCollision(Object * obj)
 
 void Ogre::Update()
 {
-    // movimenta objeto pelo seu vetor velocidade
-    Translate(speed.XComponent() * gameTime, -speed.YComponent() * gameTime);
+    // persegue o jogador (50% mais lento que o Goblin)
+    speed.RotateTo(Line::Angle(Point(x, y), Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y())));
 
-    // ajusta �ngulo do vetor na dire��o oposta
-    if (x < 50 || y < 50 || x > game->Width() - 50 || y > game->Height() - 50)
-    {
-        Rotate(180);
-        speed.Rotate(180);
-        Translate(speed.XComponent() * gameTime, -speed.YComponent() * gameTime);
-    }
+    // movimenta objeto pelo seu vetor velocidade (metade da velocidade do Goblin)
+    Translate(speed.XComponent() * 30.0f * gameTime, -speed.YComponent() * 30.0f * gameTime);
 
     // atualiza calda do objeto
     tail->Config().angle = speed.Angle();
@@ -123,7 +144,7 @@ void Ogre::Update()
     tailCount = tail->Size();
     Hud::particles += tailCount;
 
-    // atualiza anima��o
+    // atualiza animação
     animRun->NextFrame();
 }
 

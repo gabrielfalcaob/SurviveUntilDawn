@@ -38,8 +38,11 @@ XPOrb::~XPOrb()
 void XPOrb::OnCollect()
 {
     // adiciona XP e recalcula nível
+    uint oldLevel = Hud::playerLevel;
     Hud::playerXP += amount;
     Hud::playerLevel = (uint)(1 + sqrt(Hud::playerXP / 50.0f));
+    if (Hud::playerLevel > oldLevel)
+        SurviveUntilDawn::player->LevelUp();
 }
 
 // -------------------------------------------------------------------------------
@@ -58,7 +61,7 @@ void XPOrb::Update()
     else
     {
         // atrai o orb na direção do jogador se estiver próximo
-        if (Point::Distance(Point(x, y), Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y())) < 80.0f)
+        if (Point::Distance(Point(x, y), Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y())) < SurviveUntilDawn::player->pickupRadius)
         {
             Vector dir(Line::Angle(Point(x, y), Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y())), 1.0f);
             Translate(dir.XComponent() * 120.0f * gameTime, -dir.YComponent() * 120.0f * gameTime);

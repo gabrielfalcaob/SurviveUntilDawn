@@ -15,6 +15,9 @@
 #include "Hud.h"
 #include "SwordSlash.h"
 
+#include <cstdlib>
+#include <iostream>
+
 Image * Player::missile = nullptr;
 
 // -------------------------------------------------------------------------------
@@ -399,8 +402,8 @@ void Player::Update()
 
     currentAnim->NextFrame();
 
-    // movimenta objeto pelo seu vetor velocidade
-    Translate(speed.XComponent() * 50.0f * gameTime, -speed.YComponent() * 50.0f * gameTime);
+    // movimenta objeto pelo seu vetor velocidade (com b�nus do level up)
+    Translate(speed.XComponent() * 50.0f * (1.0f + speedBonus) * gameTime, -speed.YComponent() * 50.0f * (1.0f + speedBonus) * gameTime);
 
     // atualiza calda do jogador
     tail->Config().angle = speed.Angle() + 180;
@@ -427,7 +430,51 @@ void Player::Update()
 void Player::Draw()
 {
     currentAnim->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
-    tail->Draw(Layer::LOWER, 1.0f);
+    if (!isGamePaused)                          // n�o anima part�culas durante pause
+        tail->Draw(Layer::LOWER, 1.0f);
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::LevelUp()
+{
+    TriggerLevelUpScreen();
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::TriggerLevelUpScreen()
+{
+    // TODO: Limpar particulas
+    isGamePaused = true;
+    std::cout << "\n===============================\n";
+    std::cout << "          LEVEL UP!            \n";
+    std::cout << " Escolha seu poder no teclado: \n";
+    std::cout << " [1] Orbital (Bola de Fogo)    \n";
+    std::cout << " [2] Velocidade de Movimento   \n";
+    std::cout << " [3] Aumentar Raio do Ima      \n";
+    std::cout << "===============================\n";
+    choice1 = (rand() % 3) + 1;
+    choice2 = (rand() % 3) + 1;
+    choice3 = (rand() % 3) + 1;
+}
+
+// -------------------------------------------------------------------------------
+
+void Player::ApplyPowerUp(int powerId)
+{
+    if (powerId == 1)
+    {
+        // Orbital — TODO: implementar Orbital
+    }
+    else if (powerId == 2)
+    {
+        speedBonus += 0.3f;
+    }
+    else if (powerId == 3)
+    {
+        pickupRadius += 80.0f;
+    }
 }
 
 // -------------------------------------------------------------------------------

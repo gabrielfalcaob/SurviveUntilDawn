@@ -20,6 +20,7 @@
 #include "Background.h"
 #include "Player.h"
 #include "Hud.h"
+#include "Font.h"
 
 // ------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ enum Ids
 {
     PLAYER, MISSILE, WALLHIT, WIZARD, DRAGON, GOBLIN, OGRE,
     THEME, START, FIRE, EXPLODE, HITWALL, EXPLOSION,
-    XPORB, MAGNET, BOMB, PICKUP_SFX, SWORDSLASH, HEALTHDROP
+    XPORB, MAGNET, BOMB, PICKUP_SFX, SWORDSLASH, HEALTHDROP, MAGICMISSILE
 };
 
 // ------------------------------------------------------------------------------
@@ -38,6 +39,10 @@ private:
     Background * backg = nullptr;   // pano de fundo
     Hud * hud = nullptr;            // heads up display
     bool viewBBox = false;          // visualiza��o das bouding boxes
+    Font * fontUI = nullptr;        // fonte para a tela de level up
+    Sprite* iconOpcao1 = nullptr;   // �cone op��o 1
+    Sprite* iconOpcao2 = nullptr;   // �cone op��o 2
+    Sprite* iconOpcao3 = nullptr;   // �cone op��o 3
 
 public:
     static Player * player;         // ponteiro para o jogador
@@ -56,7 +61,6 @@ public:
     void Draw();                    // desenho
     void Finalize();                // finaliza��o
 };
-
 // ---------------------------------------------------------------------------------
 
 #endif

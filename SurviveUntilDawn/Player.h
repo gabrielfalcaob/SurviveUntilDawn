@@ -1,6 +1,6 @@
 /**********************************************************************************
 // Player (Arquivo de Cabe�alho)
-// 
+//
 // Cria��o:     10 Out 2012
 // Atualiza��o: 11 Nov 2021
 // Compilador:  Visual C++ 2022
@@ -24,6 +24,8 @@
 #include "TileSet.h"                    // folha de sprites
 
 // ---------------------------------------------------------------------------------
+
+extern bool isGamePaused;
 
 enum PlayerState { IDLE, RUN, ATTACK };
 
@@ -66,7 +68,7 @@ private:
 
     Controller * gamepad;               // leitura do controle
     bool gamepadOn;                     // controle esta ligado
-    
+
     Timer timer;                        // controla tempo dos disparos
     llong start;                        // marcacao de incio do disparo
     bool axisCtrl;                      // habilita leitura de disparos
@@ -77,10 +79,13 @@ private:
 public:
     static Image * missile;             // imagem do missil
     Vector speed;                       // velocidade e direcao de movimento
+    float speedBonus = 0.0f;            // b�nus de velocidade do level up
+    float pickupRadius = 80.0f;         // raio de atra��o dos orbs (public)
+    int choice1 = 0, choice2 = 0, choice3 = 0;  // escolhas do level up (public)
 
     Player();                           // construtor
     ~Player();                          // destrutor
-    
+
     bool AxisTimed(int axisX, int axisY, float time);
     bool KeysTimed(bool pressed, float time);
 
@@ -92,7 +97,11 @@ public:
     void OnCollision(Object * obj);     // resolucao de colisao
     void Update();                      // atualiza��o
     void Draw();                        // desenho
-}; 
+
+    void LevelUp();                     // sobe de n�vel
+    void TriggerLevelUpScreen();        // tela de sele��o de poder
+    void ApplyPowerUp(int powerId);     // aplica o poder escolhido
+};
 // ---------------------------------------------------------------------------------
 
 #endif

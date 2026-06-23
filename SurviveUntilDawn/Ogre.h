@@ -30,6 +30,7 @@ private:
     Particles * tail;                       // calda do objeto
     uint tailCount;                         // quantidade de part�culas da calda
     Vector speed;                           // velocidade e dire��o
+    int hp = 5;                             // vida do ogre (tank)
 
     TileSet * tsRun;                        // folha de sprites corrida
     Animation * animRun;                    // anima��o corrida

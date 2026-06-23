@@ -10,6 +10,7 @@
 //
 **********************************************************************************/
 
+#include <iostream>
 #include "Resources.h"
 #include "SurviveUntilDawn.h"
 #include "Engine.h"
@@ -22,6 +23,8 @@ Player * SurviveUntilDawn::player  = nullptr;
 Audio  * SurviveUntilDawn::audio   = nullptr;
 Scene  * SurviveUntilDawn::scene   = nullptr;
 bool     SurviveUntilDawn::viewHUD = false;
+
+bool isGamePaused = false;
 Image  * SurviveUntilDawn::wizard  = nullptr;
 Image  * SurviveUntilDawn::dragon  = nullptr;
 Image  * SurviveUntilDawn::goblin  = nullptr;
@@ -65,6 +68,13 @@ void SurviveUntilDawn::Init()
     scene   = new Scene();
     hud     = new Hud();
 
+    // inicializa fonte e �cones para a tela de level up
+    fontUI = new Font("Resources/Tahoma14.png");
+    fontUI->Spacing("Resources/Tahoma14.dat");
+    iconOpcao1 = new Sprite("Resources/Player.png");    // TODO: trocar pela arte final
+    iconOpcao2 = new Sprite("Resources/Green.png");     // TODO: trocar pela arte final
+    iconOpcao3 = new Sprite("Resources/Blue.png");      // TODO: trocar pela arte final
+
     // adiciona objetos na cena
     scene->Add(player, MOVING);
     scene->Add(new Spawner(player), STATIC);
@@ -93,9 +103,31 @@ void SurviveUntilDawn::Update()
     if (window->KeyDown(VK_ESCAPE))
         window->Close();
 
-    // atualiza cena e detecta colisões
-    scene->Update();
-    scene->CollisionDetection();
+    if (!isGamePaused)
+    {
+        // atualiza cena e detecta colisões
+        scene->Update();
+        scene->CollisionDetection();
+    }
+    else
+    {
+        // --- LÓGICA DO MENU DE LEVEL UP ---
+        if (window->KeyPress('1') || window->KeyPress(VK_NUMPAD1)) {
+            player->ApplyPowerUp(player->choice1);
+            isGamePaused = false;
+            std::cout << "Poder 1 escolhido!\n";
+        }
+        else if (window->KeyPress('2') || window->KeyPress(VK_NUMPAD2)) {
+            player->ApplyPowerUp(player->choice2);
+            isGamePaused = false;
+            std::cout << "Poder 2 escolhido!\n";
+        }
+        else if (window->KeyPress('3') || window->KeyPress(VK_NUMPAD3)) {
+            player->ApplyPowerUp(player->choice3);
+            isGamePaused = false;
+            std::cout << "Poder 3 escolhido!\n";
+        }
+    }
 
     // ---------------------------------------------------
     // atualiza a viewport
@@ -152,6 +184,28 @@ void SurviveUntilDawn::Draw()
     // desenha a cena
     scene->Draw();
 
+    // tela de level up quando o jogo est� pausado
+    if (isGamePaused)
+    {
+        // Font::Draw usa coordenadas de TELA (screen space)
+        float cx = window->Width()  / 2.0f;
+        float cy = window->Height() / 2.0f;
+
+        fontUI->Draw(cx - 80, cy - 60, "LEVEL UP! Escolha seu poder:", { 1,1,1,1 });
+        fontUI->Draw(cx - 80, cy - 20, "1 - Orbital (Bola de Fogo)",   { 1,1,0,1 });
+        fontUI->Draw(cx - 80, cy + 10, "2 - Velocidade de Movimento",  { 0,1,1,1 });
+        fontUI->Draw(cx - 80, cy + 40, "3 - Aumentar Raio do Ima",     { 1,0.5f,0,1 });
+
+        // Sprite::Draw usa coordenadas de MUNDO (world space)
+        // converter tela->mundo somando viewport.left/top
+        float wx = viewport.left + cx;
+        float wy = viewport.top  + cy;
+
+        if (iconOpcao1) iconOpcao1->Draw(wx - 130, wy - 20, Layer::FRONT, 0.5f);
+        if (iconOpcao2) iconOpcao2->Draw(wx - 130, wy + 10, Layer::FRONT, 0.5f);
+        if (iconOpcao3) iconOpcao3->Draw(wx - 130, wy + 40, Layer::FRONT, 0.5f);
+    }
+
     // desenha o painel de informa��es
     if (viewHUD)
         hud->Draw();
@@ -165,6 +219,10 @@ void SurviveUntilDawn::Draw()
 
 void SurviveUntilDawn::Finalize()
 {
+    delete fontUI;
+    delete iconOpcao1;
+    delete iconOpcao2;
+    delete iconOpcao3;
     delete audio;
     delete hud;
     delete scene;

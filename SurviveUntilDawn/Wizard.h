@@ -35,6 +35,9 @@ private:
     Animation * animRun;                        // anima��o corrida
     uint seqRun[6] = { 0,1,2,3,4,5 };          // sequ�ncia corrida
 
+    Timer attackTimer;                          // timer do ataque magico
+    float attackCooldown = 2.5f;                // cooldown entre disparos
+
 public:
     Wizard(float pX, float pY, Player * p);     // construtor
     ~Wizard();                                  // destrutor
