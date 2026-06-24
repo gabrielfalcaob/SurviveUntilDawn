@@ -1,11 +1,11 @@
 /**********************************************************************************
-// Player (C�digo Fonte)
-// 
-// Cria��o:     10 Out 2012
-// Atualiza��o: 11 Nov 2021
+// Player (Codigo Fonte)
+//
+// Criacao:     10 Out 2012
+// Atualizacao: 11 Nov 2021
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Define a classe jogador
+// Descricao:   Define a classe jogador
 //
 **********************************************************************************/
 
@@ -14,7 +14,9 @@
 #include "SurviveUntilDawn.h"
 #include "Hud.h"
 #include "SwordSlash.h"
-
+#include "Orbital.h"
+#include "Shockwave.h"
+#include "Lightning.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -28,7 +30,7 @@ Player::Player()
     gamepad = new Controller();
     gamepadOn = gamepad->Initialize();
 
-    // configura��o do objeto
+    // configuracao do objeto
     tsIdle = new TileSet("Resources/Warrior_Idle.png", 85, 91, 8, 8);
     tsRun = new TileSet("Resources/Warrior_Run.png", 95, 93, 6, 6);
     tsAttack = new TileSet("Resources/Warrior_Attack1.png", 122, 106, 4, 4);
@@ -54,22 +56,22 @@ Player::Player()
     MoveTo(game->CenterX(), game->CenterY());
     type = PLAYER;
 
-    // configura��o do emissor de part�culas
+    // configuracao do emissor de particulas
     Generator emitter;
     emitter.imgFile = "Resources/Steps.png";    // arquivo de imagem
-    emitter.angle = 270.0f;                     // �ngulo base do emissor
+    emitter.angle = 270.0f;                     // angulo base do emissor
     emitter.spread = 25;                        // espalhamento em graus
     emitter.lifetime = 0.3f;                    // tempo de vida em segundos
-    emitter.frequency = 0.010f;                 // tempo entre gera��o de novas part�culas
-    emitter.percentToDim = 0.6f;                // desaparece ap�s 60% da vida
-    emitter.minSpeed = 50.0f;                   // velocidade m�nima das part�culas
-    emitter.maxSpeed = 100.0f;                  // velocidade m�xima das part�culas
-    emitter.color.r = 1.0f;                     // componente Red da part�cula 
-    emitter.color.g = 1.0f;                     // componente Green da part�cula 
-    emitter.color.b = 1.0f;                     // componente Blue da part�cula 
-    emitter.color.a = 1.0f;                     // transpar�ncia da part�cula
+    emitter.frequency = 0.010f;                 // tempo entre geracao de novas particulas
+    emitter.percentToDim = 0.6f;                // desaparece apos 60% da vida
+    emitter.minSpeed = 50.0f;                   // velocidade minima das particulas
+    emitter.maxSpeed = 100.0f;                  // velocidade maxima das particulas
+    emitter.color.r = 1.0f;                     // componente Red da particula
+    emitter.color.g = 1.0f;                     // componente Green da particula
+    emitter.color.b = 1.0f;                     // componente Blue da particula
+    emitter.color.a = 1.0f;                     // transparencia da particula
 
-    // cria sistema de part�culas
+    // cria sistema de particulas
     tail = new Particles(emitter);
     tailCount = 0;
 
@@ -82,6 +84,8 @@ Player::Player()
     timer.Start();
     attackTimer.Start();
     invulnTimer.Start();
+    shockwaveTimer.Start();
+    lightningTimer.Start();
 }
 
 // -------------------------------------------------------------------------------
@@ -103,17 +107,15 @@ Player::~Player()
 
 void Player::OnCollision(Object * obj)
 {
-    // o dano � aplicado diretamente pelo inimigo ao colidir com o jogador
+    // o dano e aplicado diretamente pelo inimigo ao colidir com o jogador
 }
 
 // -------------------------------------------------------------------------------
 
 bool Player::KeysTimed(bool pressed, float time)
 {
-    // se j� passou o tempo para o pr�ximo disparo
     if (keysCtrl)
     {
-        // se h� qualquer seta pressionada
         if (pressed)
         {
             keysCtrl = false;
@@ -121,13 +123,11 @@ bool Player::KeysTimed(bool pressed, float time)
             return true;
         }
     }
-    // sen�o aguarda o momento certo
     else if (timer.Elapsed(start, time))
     {
         keysCtrl = true;
     }
 
-    // teclas n�o pressionadas ou tempo n�o atingido
     return false;
 }
 
@@ -135,13 +135,10 @@ bool Player::KeysTimed(bool pressed, float time)
 
 bool Player::AxisTimed(int axisX, int axisY, float time)
 {
-    // se j� passou o tempo para o pr�ximo disparo
     if (axisCtrl)
     {
-        // a magnitude � a dist�ncia do eixo para o seu centro
         float magnitude = Point::Distance(Point(0, 0), Point(float(gamepad->Axis(axisX)), float(gamepad->Axis(axisY))));
 
-        // se h� qualquer movimento no eixo
         if (magnitude > 0)
         {
             axisCtrl = false;
@@ -149,13 +146,11 @@ bool Player::AxisTimed(int axisX, int axisY, float time)
             return true;
         }
     }
-    // sen�o aguarda o momento certo para testar
     else if (timer.Elapsed(start, time))
     {
         axisCtrl = true;
     }
 
-    // eixo n�o acionado ou tempo n�o atingido
     return false;
 }
 
@@ -163,10 +158,8 @@ bool Player::AxisTimed(int axisX, int axisY, float time)
 
 void Player::Move(Vector && v)
 {
-    // soma vetor movimento (v) ao vetor velocidade
     speed.Add(v);
 
-    // limita velocidade m�xima
     if (speed.Magnitude() > 10.0f)
         speed.ScaleTo(10.0f);
 }
@@ -181,7 +174,9 @@ void Player::TakeDamage(int amount)
     if (!invulnTimer.Elapsed(invulnTime))
         return;
 
-    hp -= amount;
+    int danoReduzido = (int)(amount * damageTakenMultiplier);
+    if (danoReduzido < 1) danoReduzido = 1;
+    hp -= danoReduzido;
     invulnTimer.Start();
 
     if (hp <= 0)
@@ -219,7 +214,6 @@ bool Player::IsMagnetActive()
 
 void Player::Update()
 {
-    // magnitude do vetor acelera��o
     float accel = 40.0f * gameTime;
 
     // -----------------
@@ -228,35 +222,27 @@ void Player::Update()
 
     if (gamepadOn)
     {
-        // atualiza estado das teclas e eixos do controle
         gamepad->UpdateState();
 
-        // constr�i vetor com base na posi��o do anal�gico esquerdo
         float ang = Line::Angle(Point(0, 0), Point(gamepad->Axis(AxisX) / 25.0f, gamepad->Axis(AxisY) / 25.0f));
         float mag = Point::Distance(Point(0, 0), Point(gamepad->Axis(AxisX) / 25.0f, gamepad->Axis(AxisY) / 25.0f));
 
-        // nenhuma dire��o selecionada
         if (mag == 0)
         {
-            // se a velocidade estiver muita baixa
             if (speed.Magnitude() < 0.1)
             {
-                // pare de se movimentar imediatamente
                 speed.ScaleTo(0.0f);
             }
             else
             {
-                // some um vetor no sentido contr�rio para frear
                 Move(Vector(speed.Angle() + 180.0f, 5.0f * gameTime));
             }
         }
         else
         {
-            // movimente-se para a nova dire��o
             Move(Vector(ang, mag * gameTime));
         }
 
-        // dispara m�ssil com o anal�gico direito
         if (AxisTimed(AxisRX, AxisRY, 0.150f))
         {
             float ang = Line::Angle(Point(0,0), Point(float(gamepad->Axis(AxisRX)), float(gamepad->Axis(AxisRY))));
@@ -271,7 +257,6 @@ void Player::Update()
 
     else
     {
-        // controla movimenta��o do jogador
         if (window->KeyDown('D') && window->KeyDown('W'))
             Move(Vector(45.0f, accel));
         else if (window->KeyDown('A') && window->KeyDown('W'))
@@ -289,18 +274,15 @@ void Player::Update()
         else if (window->KeyDown('S'))
             Move(Vector(270.0f, accel));
         else
-            // se nenhuma tecla est� pressionada comece a frear
             if (speed.Magnitude() > 0.1f)
                 Move(Vector(speed.Angle() + 180.0f, 5.0f * gameTime));
             else
-                // velocidade muita baixa, n�o use soma vetorial, apenas pare
                 speed.ScaleTo(0.0f);
 
-        // controla dire��o dos disparos
         if (window->KeyDown(VK_RIGHT) && window->KeyDown(VK_UP)) {
             keysPressed = true;
             firingAngle = 45.0f;
-        } 
+        }
         else if (window->KeyDown(VK_LEFT) && window->KeyDown(VK_UP)) {
             keysPressed = true;
             firingAngle = 135.0f;
@@ -334,7 +316,6 @@ void Player::Update()
             keysPressed = false;
         }
 
-        // dispara m�ssil
         if (KeysTimed(keysPressed, 0.150f))
         {
             SurviveUntilDawn::audio->Play(FIRE);
@@ -357,25 +338,71 @@ void Player::Update()
         magnetActive = false;
 
     // -----------------
-    // Anima��o
+    // Shockwave (Tecla R)
     // -----------------
 
-    // determina dire��o baseada no movimento
+    if (shockwaveLevel > 0 && window->KeyDown('R'))
+    {
+        if (shockwaveTimer.Elapsed(3.0f))
+        {
+            SurviveUntilDawn::scene->Add(new Shockwave(x, y, shockwaveLevel), MOVING);
+            shockwaveTimer.Start();
+        }
+    }
+
+    // -----------------
+    // Lightning (Tecla E)
+    // -----------------
+
+    if (lightningLevel > 0 && window->KeyDown('E'))
+    {
+        if (lightningTimer.Elapsed(4.0f))
+        {
+            int maxStrikes = 1 + lightningLevel;
+
+            // coleta inimigos visiveis da cena
+            SurviveUntilDawn::scene->Begin();
+            Object* targets[64];
+            int targetCount = 0;
+            Object* obj = nullptr;
+            while ((obj = SurviveUntilDawn::scene->Next()) != nullptr)
+            {
+                uint id = obj->Type();
+                if (id == GOBLIN || id == OGRE || id == WIZARD || id == DRAGON)
+                {
+                    if (targetCount < 64)
+                        targets[targetCount++] = obj;
+                }
+            }
+
+            // dispara raios em inimigos aleatorios
+            for (int i = 0; i < maxStrikes && targetCount > 0; i++)
+            {
+                int idx = rand() % targetCount;
+                SurviveUntilDawn::scene->Add(
+                    new Lightning(targets[idx]->X(), targets[idx]->Y()), MOVING);
+            }
+
+            lightningTimer.Start();
+        }
+    }
+
+    // -----------------
+    // Animacao
+    // -----------------
+
     if (speed.XComponent() > 0.1f)
         facingRight = true;
     else if (speed.XComponent() < -0.1f)
         facingRight = false;
 
-    // m�quina de estados da anima��o
     if (state == ATTACK)
     {
-        // mant�m o ataque at� o fim da anima��o
         if (animLockTimer.Elapsed(attackDuration))
             state = IDLE;
     }
     else
     {
-        // ataque autom�tico (survivor-style)
         if (attackTimer.Elapsed(attackCooldown))
         {
             attackTimer.Start();
@@ -384,9 +411,8 @@ void Player::Update()
             currentAnim = animAttack;
             animAttack->Restart();
 
-            // spawna hitbox f�sica do golpe
-            float slashX = facingRight ? x + 40.0f : x - 40.0f;
-            SurviveUntilDawn::scene->Add(new SwordSlash(slashX, y, facingRight), MOVING);
+            float slashAngle = facingRight ? 0.0f : 180.0f;
+            SurviveUntilDawn::scene->Add(new SwordSlash(x, y, slashAngle, cleaveLevel), MOVING);
         }
         else if (speed.Magnitude() > 0.1f)
         {
@@ -402,19 +428,16 @@ void Player::Update()
 
     currentAnim->NextFrame();
 
-    // movimenta objeto pelo seu vetor velocidade (com b�nus do level up)
     Translate(speed.XComponent() * 50.0f * (1.0f + speedBonus) * gameTime, -speed.YComponent() * 50.0f * (1.0f + speedBonus) * gameTime);
 
-    // atualiza calda do jogador
     tail->Config().angle = speed.Angle() + 180;
     tail->Generate(x - 10 * cos(speed.Radians()), y + 10 * sin(speed.Radians()));
     tail->Update(gameTime);
-    
+
     Hud::particles -= tailCount;
     tailCount = tail->Size();
     Hud::particles += tailCount;
 
-    // restringe a �rea do jogo
     if (x < 50)
         MoveTo(50, y);
     if (y < 50)
@@ -430,7 +453,7 @@ void Player::Update()
 void Player::Draw()
 {
     currentAnim->Draw(x, y, Layer::MIDDLE, 1.0f, 0.0f);
-    if (!isGamePaused)                          // n�o anima part�culas durante pause
+    if (!isGamePaused)
         tail->Draw(Layer::LOWER, 1.0f);
 }
 
@@ -445,7 +468,6 @@ void Player::LevelUp()
 
 void Player::TriggerLevelUpScreen()
 {
-    // TODO: Limpar particulas
     isGamePaused = true;
     std::cout << "\n===============================\n";
     std::cout << "          LEVEL UP!            \n";
@@ -453,10 +475,16 @@ void Player::TriggerLevelUpScreen()
     std::cout << " [1] Orbital (Bola de Fogo)    \n";
     std::cout << " [2] Velocidade de Movimento   \n";
     std::cout << " [3] Aumentar Raio do Ima      \n";
+    std::cout << " [4] Lance do Corte            \n";
+    std::cout << " [5] Onda de Choque (Tecla R)   \n";
+    std::cout << " [6] Bencao da Sorte (Tecla E)   \n";
+    std::cout << " [7] Aumento de Dano (Passiva)   \n";
+    std::cout << " [8] Resistencia (Armadura)      \n";
+    std::cout << " [9] Bonus de XP (+30%)          \n";
     std::cout << "===============================\n";
-    choice1 = (rand() % 3) + 1;
-    choice2 = (rand() % 3) + 1;
-    choice3 = (rand() % 3) + 1;
+    choice1 = (rand() % 9) + 1;
+    choice2 = (rand() % 9) + 1;
+    choice3 = (rand() % 9) + 1;
 }
 
 // -------------------------------------------------------------------------------
@@ -465,15 +493,54 @@ void Player::ApplyPowerUp(int powerId)
 {
     if (powerId == 1)
     {
-        // Orbital — TODO: implementar Orbital
+        orbitalCount++;
+        orbitalRadius += 15.0f;
+        orbitalHitCooldown -= 0.05f;
+        if (orbitalHitCooldown < 0.1f) orbitalHitCooldown = 0.1f;
+
+        SurviveUntilDawn::scene->Begin();
+        Object* obj = nullptr;
+        while ((obj = SurviveUntilDawn::scene->Next()) != nullptr)
+        {
+            if (obj->Type() == ORBITAL)
+                SurviveUntilDawn::scene->Delete();
+        }
+
+        for (int i = 0; i < orbitalCount; i++)
+            SurviveUntilDawn::scene->Add(new Orbital(this, i), MOVING);
     }
     else if (powerId == 2)
     {
-        speedBonus += 0.3f;
+        speedBonus += 0.05f;
     }
     else if (powerId == 3)
     {
         pickupRadius += 80.0f;
+    }
+    else if (powerId == 4)
+    {
+        cleaveLevel++;
+    }
+    else if (powerId == 5)
+    {
+        shockwaveLevel++;
+    }
+    else if (powerId == 6)
+    {
+        lightningLevel++;
+    }
+    else if (powerId == 7)
+    {
+        globalDamageMultiplier += 0.20f;
+    }
+    else if (powerId == 8)
+    {
+        damageTakenMultiplier -= 0.15f;
+        if (damageTakenMultiplier < 0.1f) damageTakenMultiplier = 0.1f;
+    }
+    else if (powerId == 9)
+    {
+        xpMultiplier += 0.3f;
     }
 }
 

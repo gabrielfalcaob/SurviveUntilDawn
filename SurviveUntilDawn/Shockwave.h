@@ -1,40 +1,38 @@
 /**********************************************************************************
-// Orbital (Arquivo de Cabe�alho)
+// Shockwave (Arquivo de Cabecalho)
 //
-// Cria��o:     23 Jun 2026
+// Criacao:     23 Jun 2026
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Proj�til orbital ao redor do jogador
+// Descricao:   Onda de choque expansiva do jogador
 //
 **********************************************************************************/
 
-#ifndef _SURVIVEUNTILDAWN_ORBITAL_H_
-#define _SURVIVEUNTILDAWN_ORBITAL_H_
+#ifndef _SURVIVEUNTILDAWN_SHOCKWAVE_H_
+#define _SURVIVEUNTILDAWN_SHOCKWAVE_H_
 
 // ---------------------------------------------------------------------------------
 
 #include "Object.h"
-#include "Particles.h"
-#include "Timer.h"
-
-class Player;
+#include "Sprite.h"
 
 // ---------------------------------------------------------------------------------
 
-class Orbital : public Object
+class Shockwave : public Object
 {
 public:
-    Orbital(Player* p, int idx);
-    ~Orbital();
+    Shockwave(float startX, float startY, int level);
+    ~Shockwave();
+
+    void OnCollision(Object* obj);
     void Update();
     void Draw();
-    void OnCollision(Object* obj);
 
 private:
-    Player* playerRef;
-    int index;
-    Particles* tail = nullptr;
-    Timer damageTimer;
+    Sprite* sprite;
+    float currentRadius;
+    float maxRadius;
+    float expansionSpeed;
 };
 
 // ---------------------------------------------------------------------------------

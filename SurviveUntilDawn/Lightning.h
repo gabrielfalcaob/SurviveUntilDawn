@@ -1,40 +1,38 @@
 /**********************************************************************************
-// Orbital (Arquivo de Cabe�alho)
+// Lightning (Arquivo de Cabecalho)
 //
-// Cria��o:     23 Jun 2026
+// Criacao:     23 Jun 2026
 // Compilador:  Visual C++ 2022
 //
-// Descri��o:   Proj�til orbital ao redor do jogador
+// Descricao:   Raio da Bencao da Sorte - dano + lentidao nos inimigos
 //
 **********************************************************************************/
 
-#ifndef _SURVIVEUNTILDAWN_ORBITAL_H_
-#define _SURVIVEUNTILDAWN_ORBITAL_H_
+#ifndef _SURVIVEUNTILDAWN_LIGHTNING_H_
+#define _SURVIVEUNTILDAWN_LIGHTNING_H_
 
 // ---------------------------------------------------------------------------------
 
 #include "Object.h"
-#include "Particles.h"
+#include "Sprite.h"
 #include "Timer.h"
-
-class Player;
 
 // ---------------------------------------------------------------------------------
 
-class Orbital : public Object
+class Lightning : public Object
 {
 public:
-    Orbital(Player* p, int idx);
-    ~Orbital();
+    Lightning(float startX, float startY);
+    ~Lightning();
+
+    void OnCollision(Object* obj);
     void Update();
     void Draw();
-    void OnCollision(Object* obj);
 
 private:
-    Player* playerRef;
-    int index;
-    Particles* tail = nullptr;
-    Timer damageTimer;
+    Sprite* sprite;
+    Timer lifeTimer;
+    int damage = 2;
 };
 
 // ---------------------------------------------------------------------------------

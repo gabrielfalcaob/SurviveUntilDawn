@@ -106,8 +106,24 @@ void Wizard::OnCollision(Object * obj)
 
 // -------------------------------------------------------------------------------
 
+void Wizard::ApplySlow(float intensity, float duration)
+{
+    speedModifier = intensity;
+    slowDuration = duration;
+}
+
+// -------------------------------------------------------------------------------
+
 void Wizard::Update()
 {
+    // decai a lentidao
+    if (slowDuration > 0.0f)
+    {
+        slowDuration -= gameTime;
+        if (slowDuration <= 0.0f)
+            speedModifier = 1.0f;
+    }
+
     float dist = Point::Distance(Point(x, y), Point(player->X(), player->Y()));
 
     // IA de distância: foge se < 250, persegue se > 350, parado no meio
@@ -138,7 +154,7 @@ void Wizard::Update()
         speed.ScaleTo(4.5f);
 
     // move o objeto pelo seu vetor velocidade
-    Translate(speed.XComponent() * 50.0f * gameTime, -speed.YComponent() * 50.0f * gameTime);
+    Translate(speed.XComponent() * 50.0f * gameTime * speedModifier, -speed.YComponent() * 50.0f * gameTime * speedModifier);
 
     // efeito de escala (amplia e reduz)
     Scale(1.0f + factor * gameTime);

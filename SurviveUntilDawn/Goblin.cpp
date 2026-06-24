@@ -106,14 +106,30 @@ void Goblin::OnCollision(Object * obj)
 
 // -------------------------------------------------------------------------------
 
+void Goblin::ApplySlow(float intensity, float duration)
+{
+    speedModifier = intensity;
+    slowDuration = duration;
+}
+
+// -------------------------------------------------------------------------------
+
 void Goblin::Update()
 {
+    // decai a lentidao
+    if (slowDuration > 0.0f)
+    {
+        slowDuration -= gameTime;
+        if (slowDuration <= 0.0f)
+            speedModifier = 1.0f;
+    }
+
     // ajusta ângulo do vetor
     speed.RotateTo(Line::Angle(Point(x, y), Point(player->X(), player->Y())));
     Rotate(200 * gameTime);
 
     // movimenta objeto pelo seu vetor velocidade
-    Translate(speed.XComponent() * 60.0f * gameTime, -speed.YComponent() * 60.0f * gameTime);
+    Translate(speed.XComponent() * 60.0f * gameTime * speedModifier, -speed.YComponent() * 60.0f * gameTime * speedModifier);
 
     // atualiza animação
     animRun->NextFrame();

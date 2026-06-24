@@ -270,6 +270,8 @@
     <ClCompile Include="XPOrb.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SwordSlash.cpp" />
+    <ClCompile Include="Shockwave.cpp" />
+    <ClCompile Include="Lightning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -306,6 +308,8 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="SwordSlash.h" />
+    <ClInclude Include="Shockwave.h" />
+    <ClInclude Include="Lightning.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileSet.h" />

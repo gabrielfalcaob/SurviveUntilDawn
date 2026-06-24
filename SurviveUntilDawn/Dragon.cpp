@@ -83,8 +83,23 @@ void Dragon::OnCollision(Object * obj)
 
 // -------------------------------------------------------------------------------
 
+void Dragon::ApplySlow(float intensity, float duration)
+{
+    speedModifier = intensity;
+    slowDuration = duration;
+}
+
+// -------------------------------------------------------------------------------
+
 void Dragon::Update()
 {
+    // decai a lentidao
+    if (slowDuration > 0.0f)
+    {
+        slowDuration -= gameTime;
+        if (slowDuration <= 0.0f)
+            speedModifier = 1.0f;
+    }
     // a magnitude do vetor target controla qu�o r�pido o objeto converge para a dire��o do alvo
     Vector target = Vector(Line::Angle(Point(x, y), Point(player->X(), player->Y())), 20.0f * gameTime);
 
@@ -102,8 +117,8 @@ void Dragon::Update()
     if (speed.Magnitude() > 8)
         speed.ScaleTo(8.0f);
 
-    // move o objeto pelo seu vetor velocidade
-    Translate(speed.XComponent() * 50.0f * gameTime, -speed.YComponent() * 50.0f * gameTime);
+    // move o objeto pelo seu vetor velocidade (aplicando lentidao)
+    Translate(speed.XComponent() * 50.0f * gameTime * speedModifier, -speed.YComponent() * 50.0f * gameTime * speedModifier);
     Rotate(50 * gameTime);
 
     // mant�m o objeto dentro do mundo do jogo
