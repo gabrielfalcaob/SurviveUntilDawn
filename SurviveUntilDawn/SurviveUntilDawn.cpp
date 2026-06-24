@@ -48,6 +48,7 @@ void SurviveUntilDawn::Init()
 	audio->Add(LEVEL_UP, "Resources/level_up.wav");
 	audio->Add(BONUS, "Resources/Bonus.wav");
 	audio->Add(HEAL, "Resources/Heal.wav");
+	audio->Add(SWORD, "Resources/sword_swing.wav");
 
     // ajusta volumes
     audio->Volume(START, 0.90f);
@@ -60,6 +61,7 @@ void SurviveUntilDawn::Init()
     audio->Volume(DRAGON, 0.75f);
     audio->Volume(BONUS, 0.50f);
 	audio->Volume(HEAL, 0.50f);
+	audio->Volume(SWORD, 0.50f);
 
     // carrega imagens das geometrias
     wizard = new Image("Resources/Wizard.png");
