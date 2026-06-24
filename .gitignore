@@ -432,4 +432,4 @@ FodyWeavers.xsd
 # Exclusões de Ferramentas de IA Locais
 # ==========================================
 .claude/
-CLAUDE.md
+CLAUDE.md*.zip
