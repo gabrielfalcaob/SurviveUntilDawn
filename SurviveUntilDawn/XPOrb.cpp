@@ -37,6 +37,7 @@ XPOrb::~XPOrb()
 
 void XPOrb::OnCollect()
 {
+	SurviveUntilDawn::audio->Play(BONUS);
     // adiciona XP e recalcula nível
     uint oldLevel = Hud::playerLevel;
     Hud::playerXP += amount;

@@ -40,21 +40,26 @@ void SurviveUntilDawn::Init()
     audio->Add(THEME, "Resources/Theme.wav");
     audio->Add(FIRE, "Resources/Fire.wav", 2);
     audio->Add(HITWALL, "Resources/Hitwall.wav", 5);
-    audio->Add(EXPLODE, "Resources/Explode.wav", 3);
-    audio->Add(OGRE, "Resources/Orange.wav", 1);
-    audio->Add(GOBLIN, "Resources/Magenta.wav", 2);
-    audio->Add(WIZARD, "Resources/Blue.wav", 2);
-    audio->Add(DRAGON, "Resources/Green.wav", 2);
+    audio->Add(EXPLODE, "Resources/Death.wav", 3);
+    audio->Add(OGRE, "Resources/Ogre.wav", 1);
+    audio->Add(GOBLIN, "Resources/Goblin.wav", 2);
+    audio->Add(WIZARD, "Resources/Wizard.wav", 2);
+    audio->Add(DRAGON, "Resources/Dragon.wav", 2);
+	audio->Add(LEVEL_UP, "Resources/level_up.wav");
+	audio->Add(BONUS, "Resources/Bonus.wav");
+	audio->Add(HEAL, "Resources/Heal.wav");
 
     // ajusta volumes
-    audio->Volume(START, 0.30f);
+    audio->Volume(START, 0.90f);
     audio->Volume(THEME, 0.60f);
     audio->Volume(FIRE, 0.10f);
     audio->Volume(EXPLODE, 0.15f);
-    audio->Volume(OGRE, 0.90f);
+    audio->Volume(OGRE, 0.10f);
     audio->Volume(GOBLIN, 0.40f);
     audio->Volume(WIZARD, 0.20f);
     audio->Volume(DRAGON, 0.75f);
+    audio->Volume(BONUS, 0.50f);
+	audio->Volume(HEAL, 0.50f);
 
     // carrega imagens das geometrias
     wizard = new Image("Resources/Wizard.png");
