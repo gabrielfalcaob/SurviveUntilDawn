@@ -78,9 +78,15 @@ void SurviveUntilDawn::Init()
     // inicializa fonte e �cones para a tela de level up
     fontUI = new Font("Resources/Tahoma14.png");
     fontUI->Spacing("Resources/Tahoma14.dat");
-    iconOpcao1 = new Sprite("Resources/Player.png");    // TODO: trocar pela arte final
-    iconOpcao2 = new Sprite("Resources/Green.png");     // TODO: trocar pela arte final
-    iconOpcao3 = new Sprite("Resources/Blue.png");      // TODO: trocar pela arte final
+    iconPower1 = new Sprite("Resources/Orange.png"); // Orbital
+    iconPower2 = new Sprite("Resources/Green.png");  // Velocidade
+    iconPower3 = new Sprite("Resources/Blue.png");   // Ima
+    iconPower4 = new Sprite("Resources/Magenta.png"); // Lance do Corte
+    iconPower5 = new Sprite("Resources/Explo.png"); // Onda de Choque
+    iconPower6 = new Sprite("Resources/Explo.png"); // Bencao da Sorte (Raios)
+    iconPower7 = new Sprite("Resources/Orange.png");   // Aumento de Dano (Passiva)
+    iconPower8 = new Sprite("Resources/Blue.png");     // Resistencia (Armadura)
+    iconPower9 = new Sprite("Resources/Green.png");    // Bonus de XP
 
     // adiciona objetos na cena
     scene->Add(player, MOVING);
@@ -198,19 +204,51 @@ void SurviveUntilDawn::Draw()
         float cx = window->Width()  / 2.0f;
         float cy = window->Height() / 2.0f;
 
+        const char* txt1 = ""; Sprite* spr1 = nullptr;
+        if (player->choice1 == 1) { txt1 = "1 - Orbital"; spr1 = iconPower1; }
+        else if (player->choice1 == 2) { txt1 = "1 - Velocidade"; spr1 = iconPower2; }
+        else if (player->choice1 == 3) { txt1 = "1 - Raio do Ima"; spr1 = iconPower3; }
+        else if (player->choice1 == 4) { txt1 = "1 - Lance do Corte"; spr1 = iconPower4; }
+        else if (player->choice1 == 5) { txt1 = "1 - Onda de Choque (R)"; spr1 = iconPower5; }
+        else if (player->choice1 == 6) { txt1 = "1 - Bencao da Sorte (E)"; spr1 = iconPower6; }
+        else if (player->choice1 == 7) { txt1 = "1 - Aumento de Dano (Passiva)"; spr1 = iconPower7; }
+        else if (player->choice1 == 8) { txt1 = "1 - Resistencia (Armadura)"; spr1 = iconPower8; }
+        else if (player->choice1 == 9) { txt1 = "1 - Bonus de XP (+30%)"; spr1 = iconPower9; }
+
+        const char* txt2 = ""; Sprite* spr2 = nullptr;
+        if (player->choice2 == 1) { txt2 = "2 - Orbital"; spr2 = iconPower1; }
+        else if (player->choice2 == 2) { txt2 = "2 - Velocidade"; spr2 = iconPower2; }
+        else if (player->choice2 == 3) { txt2 = "2 - Raio do Ima"; spr2 = iconPower3; }
+        else if (player->choice2 == 4) { txt2 = "2 - Lance do Corte"; spr2 = iconPower4; }
+        else if (player->choice2 == 5) { txt2 = "2 - Onda de Choque (R)"; spr2 = iconPower5; }
+        else if (player->choice2 == 6) { txt2 = "2 - Bencao da Sorte (E)"; spr2 = iconPower6; }
+        else if (player->choice2 == 7) { txt2 = "2 - Aumento de Dano (Passiva)"; spr2 = iconPower7; }
+        else if (player->choice2 == 8) { txt2 = "2 - Resistencia (Armadura)"; spr2 = iconPower8; }
+        else if (player->choice2 == 9) { txt2 = "2 - Bonus de XP (+30%)"; spr2 = iconPower9; }
+
+        const char* txt3 = ""; Sprite* spr3 = nullptr;
+        if (player->choice3 == 1) { txt3 = "3 - Orbital"; spr3 = iconPower1; }
+        else if (player->choice3 == 2) { txt3 = "3 - Velocidade"; spr3 = iconPower2; }
+        else if (player->choice3 == 3) { txt3 = "3 - Raio do Ima"; spr3 = iconPower3; }
+        else if (player->choice3 == 4) { txt3 = "3 - Lance do Corte"; spr3 = iconPower4; }
+        else if (player->choice3 == 5) { txt3 = "3 - Onda de Choque (R)"; spr3 = iconPower5; }
+        else if (player->choice3 == 6) { txt3 = "3 - Bencao da Sorte (E)"; spr3 = iconPower6; }
+        else if (player->choice3 == 7) { txt3 = "3 - Aumento de Dano (Passiva)"; spr3 = iconPower7; }
+        else if (player->choice3 == 8) { txt3 = "3 - Resistencia (Armadura)"; spr3 = iconPower8; }
+        else if (player->choice3 == 9) { txt3 = "3 - Bonus de XP (+30%)"; spr3 = iconPower9; }
+
         fontUI->Draw(cx - 80, cy - 60, "LEVEL UP! Escolha seu poder:", { 1,1,1,1 });
-        fontUI->Draw(cx - 80, cy - 20, "1 - Orbital (Bola de Fogo)",   { 1,1,0,1 });
-        fontUI->Draw(cx - 80, cy + 10, "2 - Velocidade de Movimento",  { 0,1,1,1 });
-        fontUI->Draw(cx - 80, cy + 40, "3 - Aumentar Raio do Ima",     { 1,0.5f,0,1 });
+        fontUI->Draw(cx - 80, cy - 20, txt1, { 1,1,0,1 });
+        fontUI->Draw(cx - 80, cy + 10, txt2, { 0,1,1,1 });
+        fontUI->Draw(cx - 80, cy + 40, txt3, { 1,0.5f,0,1 });
 
         // Sprite::Draw usa coordenadas de MUNDO (world space)
-        // converter tela->mundo somando viewport.left/top
         float wx = viewport.left + cx;
         float wy = viewport.top  + cy;
 
-        if (iconOpcao1) iconOpcao1->Draw(wx - 130, wy - 20, Layer::FRONT, 0.5f);
-        if (iconOpcao2) iconOpcao2->Draw(wx - 130, wy + 10, Layer::FRONT, 0.5f);
-        if (iconOpcao3) iconOpcao3->Draw(wx - 130, wy + 40, Layer::FRONT, 0.5f);
+        if (spr1) spr1->Draw(wx - 130, wy - 20, Layer::FRONT, 0.5f);
+        if (spr2) spr2->Draw(wx - 130, wy + 10, Layer::FRONT, 0.5f);
+        if (spr3) spr3->Draw(wx - 130, wy + 40, Layer::FRONT, 0.5f);
     }
 
     // desenha o painel de informa��es
@@ -227,9 +265,15 @@ void SurviveUntilDawn::Draw()
 void SurviveUntilDawn::Finalize()
 {
     delete fontUI;
-    delete iconOpcao1;
-    delete iconOpcao2;
-    delete iconOpcao3;
+    delete iconPower1;
+    delete iconPower2;
+    delete iconPower3;
+    delete iconPower4;
+    delete iconPower5;
+    delete iconPower6;
+    delete iconPower7;
+    delete iconPower8;
+    delete iconPower9;
     delete audio;
     delete hud;
     delete scene;

@@ -29,6 +29,8 @@ class Goblin : public Object
 private:
     Player * player;                            // ponteiro para jogador
     Vector speed;                               // velocidade e dire��o
+    float speedModifier = 1.0f;                 // modificador de lentidao
+    float slowDuration = 0.0f;                  // duracao restante da lentidao
 
     TileSet * tsRun;                            // folha de sprites corrida
     Animation * animRun;                        // anima��o corrida
@@ -42,6 +44,7 @@ public:
     void OnCollision(Object * obj);             // resolu��o da colis�o
     void Update();                              // atualiza��o
     void Draw();                                // desenho
+    void ApplySlow(float intensity, float duration); // aplica lentidao
 };
 
 // ---------------------------------------------------------------------------------

@@ -23,15 +23,14 @@ class SwordSlash : public Object
 {
 private:
     Timer lifeTimer;                            // tempo de vida do hitbox
-    bool facingRight;                           // dire��o do ataque
 
 public:
-    SwordSlash(float startX, float startY, bool dir);   // construtor
-    ~SwordSlash();                                      // destrutor
+    SwordSlash(float startX, float startY, float angle, int cleaveLevel);
+    ~SwordSlash();
 
-    void OnCollision(Object* obj);                      // resolu��o da colis�o
-    void Update();                                      // atualiza��o
-    void Draw();                                        // desenho
+    void OnCollision(Object* obj);              // resolucao da colisao
+    void Update();                              // atualizacao
+    void Draw();                                // desenho
 };
 
 // ---------------------------------------------------------------------------------

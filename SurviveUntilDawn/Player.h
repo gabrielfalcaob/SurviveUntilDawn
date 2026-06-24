@@ -51,20 +51,20 @@ private:
     PlayerState state = IDLE;               // estado atual do jogador
     bool facingRight = true;                // jogador virado direita
 
-    Timer attackTimer;                  // timer do ataque autom�tico
+    Timer attackTimer;                  // timer do ataque automatico
     float attackCooldown = 1.5f;        // cooldown entre ataques
-    Timer animLockTimer;                // timer de travamento da anima��o
-    float attackDuration = 0.4f;        // dura��o da anima��o de ataque
+    Timer animLockTimer;                // timer de travamento da animacao
+    float attackDuration = 0.4f;        // duracao da animacao de ataque
 
     int hp = 5;                         // vida atual
-    int maxHp = 10;                     // vida m�xima
+    int maxHp = 10;                     // vida maxima
     bool isImmortal = false;            // modo Deus ativo
     Timer invulnTimer;                  // timer de invulnerabilidade
-    float invulnTime = 1.0f;            // dura��o da invulnerabilidade
+    float invulnTime = 1.0f;            // duracao da invulnerabilidade
 
-    bool magnetActive = false;          // im� ativo
-    Timer magnetTimer;                  // timer do im�
-    float magnetDuration = 3.0f;        // dura��o do im� (segundos)
+    bool magnetActive = false;          // ima ativo
+    Timer magnetTimer;                  // timer do ima
+    float magnetDuration = 3.0f;        // duracao do ima (segundos)
 
     Controller * gamepad;               // leitura do controle
     bool gamepadOn;                     // controle esta ligado
@@ -76,12 +76,26 @@ private:
     bool keysPressed;                   // qualquer seta pressionada
     float firingAngle;                  // direcao dos disparos
 
+    int shockwaveLevel = 0;             // nivel da Onda de Choque
+    Timer shockwaveTimer;               // timer de cooldown da onda
+
+    int lightningLevel = 0;             // nivel da Bencao da Sorte
+    Timer lightningTimer;               // timer de cooldown dos raios
+
 public:
     static Image * missile;             // imagem do missil
     Vector speed;                       // velocidade e direcao de movimento
-    float speedBonus = 0.0f;            // b�nus de velocidade do level up
-    float pickupRadius = 80.0f;         // raio de atra��o dos orbs (public)
+    float speedBonus = 0.0f;            // bonus de velocidade do level up
+    float pickupRadius = 80.0f;         // raio de atracao dos orbs (public)
     int choice1 = 0, choice2 = 0, choice3 = 0;  // escolhas do level up (public)
+    int orbitalCount = 0;               // quantidade de orbes ativos
+    float orbitalBaseAngle = 0.0f;      // angulo base dos orbitais
+    float orbitalRadius = 70.0f;        // raio da orbita dos orbitais
+    float orbitalHitCooldown = 0.5f;    // cooldown entre acertos dos orbitais
+    int cleaveLevel = 0;                // nivel do Lance do Corte
+    float globalDamageMultiplier = 1.0f; // multiplicador global de dano
+    float damageTakenMultiplier = 1.0f;  // multiplicador de dano recebido (armadura)
+    float xpMultiplier = 1.0f;           // multiplicador de XP
 
     Player();                           // construtor
     ~Player();                          // destrutor
@@ -92,14 +106,14 @@ public:
     void Move(Vector && v);             // movimenta jogador
     void TakeDamage(int amount);        // recebe dano
     void Heal(int amount);              // cura o jogador
-    void ActivateMagnet();              // ativa o im�
-    bool IsMagnetActive();              // retorna se o im� est� ativo
+    void ActivateMagnet();              // ativa o ima
+    bool IsMagnetActive();              // retorna se o ima esta ativo
     void OnCollision(Object * obj);     // resolucao de colisao
-    void Update();                      // atualiza��o
+    void Update();                      // atualizacao
     void Draw();                        // desenho
 
-    void LevelUp();                     // sobe de n�vel
-    void TriggerLevelUpScreen();        // tela de sele��o de poder
+    void LevelUp();                     // sobe de nivel
+    void TriggerLevelUpScreen();        // tela de selecao de poder
     void ApplyPowerUp(int powerId);     // aplica o poder escolhido
 };
 // ---------------------------------------------------------------------------------

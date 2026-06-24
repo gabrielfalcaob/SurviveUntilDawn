@@ -29,6 +29,8 @@ enum Ids
     PLAYER, MISSILE, WALLHIT, WIZARD, DRAGON, GOBLIN, OGRE,
     THEME, START, FIRE, EXPLODE, HITWALL, EXPLOSION,
     XPORB, MAGNET, BOMB, PICKUP_SFX, SWORDSLASH, HEALTHDROP, MAGICMISSILE, LEVEL_UP, BONUS, HEAL, SWORD
+    XPORB, MAGNET, BOMB, PICKUP_SFX, SWORDSLASH, HEALTHDROP, MAGICMISSILE, ORBITAL,
+    SHOCKWAVE, LIGHTNING
 };
 
 // ------------------------------------------------------------------------------
@@ -40,9 +42,15 @@ private:
     Hud * hud = nullptr;            // heads up display
     bool viewBBox = false;          // visualiza��o das bouding boxes
     Font * fontUI = nullptr;        // fonte para a tela de level up
-    Sprite* iconOpcao1 = nullptr;   // �cone op��o 1
-    Sprite* iconOpcao2 = nullptr;   // �cone op��o 2
-    Sprite* iconOpcao3 = nullptr;   // �cone op��o 3
+    Sprite* iconPower1 = nullptr;   // Orbital
+    Sprite* iconPower2 = nullptr;   // Velocidade
+    Sprite* iconPower3 = nullptr;   // Ima
+    Sprite* iconPower4 = nullptr;   // Lance do Corte
+    Sprite* iconPower5 = nullptr;   // Onda de Choque
+    Sprite* iconPower6 = nullptr;   // Bencao da Sorte (Raios)
+    Sprite* iconPower7 = nullptr;   // Aumento de Dano (Passiva)
+    Sprite* iconPower8 = nullptr;   // Resistencia (Armadura)
+    Sprite* iconPower9 = nullptr;   // Bonus de XP
 
 public:
     static Player * player;         // ponteiro para o jogador

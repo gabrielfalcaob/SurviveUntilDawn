@@ -39,8 +39,9 @@ void XPOrb::OnCollect()
 {
 	SurviveUntilDawn::audio->Play(BONUS);
     // adiciona XP e recalcula nível
+    // adiciona XP com bonus e recalcula nível
     uint oldLevel = Hud::playerLevel;
-    Hud::playerXP += amount;
+    Hud::playerXP += (uint)(amount * SurviveUntilDawn::player->xpMultiplier);
     Hud::playerLevel = (uint)(1 + sqrt(Hud::playerXP / 50.0f));
     if (Hud::playerLevel > oldLevel)
         SurviveUntilDawn::player->LevelUp();

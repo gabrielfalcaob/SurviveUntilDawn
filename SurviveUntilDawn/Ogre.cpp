@@ -127,13 +127,29 @@ void Ogre::OnCollision(Object * obj)
 
 // -------------------------------------------------------------------------------
 
+void Ogre::ApplySlow(float intensity, float duration)
+{
+    speedModifier = intensity;
+    slowDuration = duration;
+}
+
+// -------------------------------------------------------------------------------
+
 void Ogre::Update()
 {
+    // decai a lentidao
+    if (slowDuration > 0.0f)
+    {
+        slowDuration -= gameTime;
+        if (slowDuration <= 0.0f)
+            speedModifier = 1.0f;
+    }
+
     // persegue o jogador (50% mais lento que o Goblin)
     speed.RotateTo(Line::Angle(Point(x, y), Point(SurviveUntilDawn::player->X(), SurviveUntilDawn::player->Y())));
 
     // movimenta objeto pelo seu vetor velocidade (metade da velocidade do Goblin)
-    Translate(speed.XComponent() * 30.0f * gameTime, -speed.YComponent() * 30.0f * gameTime);
+    Translate(speed.XComponent() * 30.0f * gameTime * speedModifier, -speed.YComponent() * 30.0f * gameTime * speedModifier);
 
     // atualiza calda do objeto
     tail->Config().angle = speed.Angle();
