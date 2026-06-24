@@ -141,6 +141,7 @@ public:
     float GetLightningTime() { return lightningTimer.Elapsed(); }
     float GetShockwaveTime() { return shockwaveTimer.Elapsed(); }
     bool IsFacingLeft() const { return isFacingLeft; }
+    Controller* GetGamepad() { return gamepad; }
 };
 // ---------------------------------------------------------------------------------
 

@@ -25,7 +25,7 @@ Orbital::Orbital(Player* p, int idx) : playerRef(p), index(idx)
     type = ORBITAL;
     // TODO: trocar pela arte final da nave amarela
     if (!OrbitalSprite)
-        OrbitalSprite = new Sprite("Resources/Missile.png");
+        OrbitalSprite = new Sprite("Resources/Gold_Resource.png");
     BBox(new Circle(8));
 
     // configura emissor de rastro de fuma�a

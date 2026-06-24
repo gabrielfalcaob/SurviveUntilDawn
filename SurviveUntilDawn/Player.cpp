@@ -30,6 +30,7 @@ Player::Player()
     // inicializa controle
     gamepad = new Controller();
     gamepadOn = gamepad->Initialize();
+    gamepad->XboxInitialize();
 
     // configuracao do objeto
     tsIdle = new TileSet("Resources/Warrior_Idle.png", 85, 91, 8, 8);
@@ -247,6 +248,7 @@ void Player::Update()
     if (gamepadOn)
     {
         gamepad->UpdateState();
+        gamepad->XboxUpdateState();
 
         float ang = Line::Angle(Point(0, 0), Point(gamepad->Axis(AxisX) / 25.0f, gamepad->Axis(AxisY) / 25.0f));
         float mag = Point::Distance(Point(0, 0), Point(gamepad->Axis(AxisX) / 25.0f, gamepad->Axis(AxisY) / 25.0f));
@@ -388,7 +390,7 @@ void Player::Update()
     // Shockwave (Tecla R)
     // -----------------
 
-    if (shockwaveLevel > 0 && window->KeyDown('R'))
+    if (shockwaveLevel > 0 && (window->KeyDown('R') || gamepad->XboxButton(RightBumper)))
     {
         if (shockwaveTimer.Elapsed(3.0f))
         {
@@ -401,7 +403,7 @@ void Player::Update()
     // Lightning (Tecla E)
     // -----------------
 
-    if (lightningLevel > 0 && window->KeyDown('E'))
+    if (lightningLevel > 0 && (window->KeyDown('E') || gamepad->XboxButton(LeftBumper)))
     {
         if (lightningTimer.Elapsed(4.0f))
         {

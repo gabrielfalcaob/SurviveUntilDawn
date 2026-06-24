@@ -137,7 +137,9 @@ void SurviveUntilDawn::Update()
 
         blinkTimer += gameTime;
 
-        if (window->KeyPress(VK_RETURN))
+        player->GetGamepad()->XboxUpdateState();
+
+        if (window->KeyPress(VK_RETURN) || player->GetGamepad()->XboxButton(ButtonStart) || player->GetGamepad()->XboxButton(ButtonA))
             currentState = GameState::PLAYING;
     }
     else if (currentState == GameState::PLAYING)
@@ -153,17 +155,19 @@ void SurviveUntilDawn::Update()
         else
         {
             // --- L�GICA DO MENU DE LEVEL UP ---
-            if (window->KeyPress('1') || window->KeyPress(VK_NUMPAD1)) {
+            player->GetGamepad()->XboxUpdateState();
+
+            if (window->KeyPress('1') || window->KeyPress(VK_NUMPAD1) || player->GetGamepad()->XboxButton(ButtonX) || player->GetGamepad()->XboxButton(DpadLeft)) {
                 player->ApplyPowerUp(player->choice1);
                 isGamePaused = false;
                 std::cout << "Poder 1 escolhido!\n";
             }
-            else if (window->KeyPress('2') || window->KeyPress(VK_NUMPAD2)) {
+            else if (window->KeyPress('2') || window->KeyPress(VK_NUMPAD2) || player->GetGamepad()->XboxButton(ButtonY) || player->GetGamepad()->XboxButton(DpadUp)) {
                 player->ApplyPowerUp(player->choice2);
                 isGamePaused = false;
                 std::cout << "Poder 2 escolhido!\n";
             }
-            else if (window->KeyPress('3') || window->KeyPress(VK_NUMPAD3)) {
+            else if (window->KeyPress('3') || window->KeyPress(VK_NUMPAD3) || player->GetGamepad()->XboxButton(ButtonB) || player->GetGamepad()->XboxButton(DpadRight)) {
                 player->ApplyPowerUp(player->choice3);
                 isGamePaused = false;
                 std::cout << "Poder 3 escolhido!\n";
@@ -256,15 +260,15 @@ void SurviveUntilDawn::Draw()
 
         // instrucoes de jogo
         fontUI->Draw(cx - 120, 420, "Controles:", { 1,1,1,1 });
-        fontUI->Draw(cx - 120, 450, "WASD - Movimentacao", { 0.8f,0.8f,0.8f,1 });
+        fontUI->Draw(cx - 120, 450, "WASD/Analog - Andar", { 0.8f,0.8f,0.8f,1 });
         fontUI->Draw(cx - 120, 480, "Setas - Arremessar Pedras", { 0.8f,0.8f,0.8f,1 });
-        fontUI->Draw(cx - 120, 510, "E / R - Habilidades Especiais", { 0.8f,0.8f,0.8f,1 });
+        fontUI->Draw(cx - 120, 510, "E/R ou LB/RB - Habilidades", { 0.8f,0.8f,0.8f,1 });
         fontUI->Draw(cx - 120, 540, "B - Mostrar Hitboxes", { 0.8f,0.8f,0.8f,1 });
         fontUI->Draw(cx - 120, 570, "H - Ocultar HUD", { 0.8f,0.8f,0.8f,1 });
 
         // texto piscante
         if ((int)(blinkTimer * 2) % 2 == 0)
-            fontUI->Draw(cx - 160, window->Height() - 100, "APERTE ENTER PARA COMECAR", { 1,1,0,1 }, 0.0f, 1.4f);
+            fontUI->Draw(cx - 160, window->Height() - 100, "APERTE ENTER OU START", { 1,1,0,1 }, 0.0f, 1.4f);
     }
     else if (currentState == GameState::GAMEOVER)
     {
@@ -312,37 +316,37 @@ void SurviveUntilDawn::Draw()
             float cy = window->Height() / 2.0f;
 
             const char* txt1 = ""; Sprite* spr1 = nullptr;
-            if (player->choice1 == 1) { txt1 = "1 - Orbital"; spr1 = iconPower1; }
-            else if (player->choice1 == 2) { txt1 = "1 - Velocidade (Mov+Atq)"; spr1 = iconPower2; }
-            else if (player->choice1 == 3) { txt1 = "1 - Raio do Ima"; spr1 = iconPower3; }
-            else if (player->choice1 == 4) { txt1 = "1 - Lance do Corte"; spr1 = iconPower4; }
-            else if (player->choice1 == 5) { txt1 = "1 - Onda de Choque (R)"; spr1 = iconPower5; }
-            else if (player->choice1 == 6) { txt1 = "1 - Bencao da Sorte (E)"; spr1 = iconPower6; }
-            else if (player->choice1 == 7) { txt1 = "1 - Aumento de Dano (Passiva)"; spr1 = iconPower7; }
-            else if (player->choice1 == 8) { txt1 = "1 - Resistencia (Armadura)"; spr1 = iconPower8; }
-            else if (player->choice1 == 9) { txt1 = "1 - Bonus de XP (+30%)"; spr1 = iconPower9; }
+            if (player->choice1 == 1) { txt1 = "1 / X - Orbital"; spr1 = iconPower1; }
+            else if (player->choice1 == 2) { txt1 = "1 / X - Velocidade (Mov+Atq)"; spr1 = iconPower2; }
+            else if (player->choice1 == 3) { txt1 = "1 / X - Raio do Ima"; spr1 = iconPower3; }
+            else if (player->choice1 == 4) { txt1 = "1 / X - Lance do Corte"; spr1 = iconPower4; }
+            else if (player->choice1 == 5) { txt1 = "1 / X - Onda de Choque (R/RB)"; spr1 = iconPower5; }
+            else if (player->choice1 == 6) { txt1 = "1 / X - Bencao da Sorte (E/LB)"; spr1 = iconPower6; }
+            else if (player->choice1 == 7) { txt1 = "1 / X - Aumento de Dano (Passiva)"; spr1 = iconPower7; }
+            else if (player->choice1 == 8) { txt1 = "1 / X - Resistencia (Armadura)"; spr1 = iconPower8; }
+            else if (player->choice1 == 9) { txt1 = "1 / X - Bonus de XP (+30%)"; spr1 = iconPower9; }
 
             const char* txt2 = ""; Sprite* spr2 = nullptr;
-            if (player->choice2 == 1) { txt2 = "2 - Orbital"; spr2 = iconPower1; }
-            else if (player->choice2 == 2) { txt2 = "2 - Velocidade (Mov+Atq)"; spr2 = iconPower2; }
-            else if (player->choice2 == 3) { txt2 = "2 - Raio do Ima"; spr2 = iconPower3; }
-            else if (player->choice2 == 4) { txt2 = "2 - Lance do Corte"; spr2 = iconPower4; }
-            else if (player->choice2 == 5) { txt2 = "2 - Onda de Choque (R)"; spr2 = iconPower5; }
-            else if (player->choice2 == 6) { txt2 = "2 - Bencao da Sorte (E)"; spr2 = iconPower6; }
-            else if (player->choice2 == 7) { txt2 = "2 - Aumento de Dano (Passiva)"; spr2 = iconPower7; }
-            else if (player->choice2 == 8) { txt2 = "2 - Resistencia (Armadura)"; spr2 = iconPower8; }
-            else if (player->choice2 == 9) { txt2 = "2 - Bonus de XP (+30%)"; spr2 = iconPower9; }
+            if (player->choice2 == 1) { txt2 = "2 / Y - Orbital"; spr2 = iconPower1; }
+            else if (player->choice2 == 2) { txt2 = "2 / Y - Velocidade (Mov+Atq)"; spr2 = iconPower2; }
+            else if (player->choice2 == 3) { txt2 = "2 / Y - Raio do Ima"; spr2 = iconPower3; }
+            else if (player->choice2 == 4) { txt2 = "2 / Y - Lance do Corte"; spr2 = iconPower4; }
+            else if (player->choice2 == 5) { txt2 = "2 / Y - Onda de Choque (R/RB)"; spr2 = iconPower5; }
+            else if (player->choice2 == 6) { txt2 = "2 / Y - Bencao da Sorte (E/LB)"; spr2 = iconPower6; }
+            else if (player->choice2 == 7) { txt2 = "2 / Y - Aumento de Dano (Passiva)"; spr2 = iconPower7; }
+            else if (player->choice2 == 8) { txt2 = "2 / Y - Resistencia (Armadura)"; spr2 = iconPower8; }
+            else if (player->choice2 == 9) { txt2 = "2 / Y - Bonus de XP (+30%)"; spr2 = iconPower9; }
 
             const char* txt3 = ""; Sprite* spr3 = nullptr;
-            if (player->choice3 == 1) { txt3 = "3 - Orbital"; spr3 = iconPower1; }
-            else if (player->choice3 == 2) { txt3 = "3 - Velocidade (Mov+Atq)"; spr3 = iconPower2; }
-            else if (player->choice3 == 3) { txt3 = "3 - Raio do Ima"; spr3 = iconPower3; }
-            else if (player->choice3 == 4) { txt3 = "3 - Lance do Corte"; spr3 = iconPower4; }
-            else if (player->choice3 == 5) { txt3 = "3 - Onda de Choque (R)"; spr3 = iconPower5; }
-            else if (player->choice3 == 6) { txt3 = "3 - Bencao da Sorte (E)"; spr3 = iconPower6; }
-            else if (player->choice3 == 7) { txt3 = "3 - Aumento de Dano (Passiva)"; spr3 = iconPower7; }
-            else if (player->choice3 == 8) { txt3 = "3 - Resistencia (Armadura)"; spr3 = iconPower8; }
-            else if (player->choice3 == 9) { txt3 = "3 - Bonus de XP (+30%)"; spr3 = iconPower9; }
+            if (player->choice3 == 1) { txt3 = "3 / B - Orbital"; spr3 = iconPower1; }
+            else if (player->choice3 == 2) { txt3 = "3 / B - Velocidade (Mov+Atq)"; spr3 = iconPower2; }
+            else if (player->choice3 == 3) { txt3 = "3 / B - Raio do Ima"; spr3 = iconPower3; }
+            else if (player->choice3 == 4) { txt3 = "3 / B - Lance do Corte"; spr3 = iconPower4; }
+            else if (player->choice3 == 5) { txt3 = "3 / B - Onda de Choque (R/RB)"; spr3 = iconPower5; }
+            else if (player->choice3 == 6) { txt3 = "3 / B - Bencao da Sorte (E/LB)"; spr3 = iconPower6; }
+            else if (player->choice3 == 7) { txt3 = "3 / B - Aumento de Dano (Passiva)"; spr3 = iconPower7; }
+            else if (player->choice3 == 8) { txt3 = "3 / B - Resistencia (Armadura)"; spr3 = iconPower8; }
+            else if (player->choice3 == 9) { txt3 = "3 / B - Bonus de XP (+30%)"; spr3 = iconPower9; }
 
             fontUI->Draw(cx - 80, cy - 60, "LEVEL UP! Escolha seu poder:", { 1,1,1,1 });
             fontUI->Draw(cx - 80, cy - 20, txt1, { 1,1,0,1 });

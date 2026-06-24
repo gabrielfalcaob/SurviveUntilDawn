@@ -158,7 +158,7 @@ void Hud::Draw()
     {
         float tempo = playerRef->GetLightningTime();
         text.str("");
-        text << "RAIO [E]: ";
+        text << "RAIO [E/LB]: ";
         if (tempo >= 4.0f)
             text << "PRONTO!";
         else
@@ -171,7 +171,7 @@ void Hud::Draw()
     {
         float tempo = playerRef->GetShockwaveTime();
         text.str("");
-        text << "ONDA [R]: ";
+        text << "ONDA [R/RB]: ";
         if (tempo >= 3.0f)
             text << "PRONTO!";
         else

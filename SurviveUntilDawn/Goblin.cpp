@@ -35,7 +35,9 @@ Goblin::Goblin(float pX, float pY, Player * p)
     BBox(new Circle(20.0f));
 
     speed.RotateTo(0);
-    speed.ScaleTo(2.0f);
+    // velocidade base aleatoria (80% a 120%) para evitar empilhamento de sprites
+    Random<float> velRand{ 0.8f, 1.2f };
+    speed.ScaleTo(2.0f * velRand.Rand());
 
     MoveTo(pX, pY);
     type = GOBLIN;
