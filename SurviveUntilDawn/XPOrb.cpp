@@ -15,7 +15,7 @@
 
 // ---------------------------------------------------------------------------------
 
-XPOrb::XPOrb(float pX, float pY, uint val) : Pickup(pX, pY, new Sprite("Resources/Green.png"))
+XPOrb::XPOrb(float pX, float pY, uint val) : Pickup(pX, pY, new Sprite("Resources/Gold_Resource.png"))
 {
     amount = val;
     type = XPORB;
@@ -38,6 +38,7 @@ XPOrb::~XPOrb()
 void XPOrb::OnCollect()
 {
 	SurviveUntilDawn::audio->Play(BONUS);
+    SurviveUntilDawn::player->totalXpCollected++;
     // adiciona XP e recalcula nível
     // adiciona XP com bonus e recalcula nível
     uint oldLevel = Hud::playerLevel;

@@ -14,7 +14,8 @@
 // ---------------------------------------------------------------------------------
 
 #include "Object.h"
-#include "Sprite.h"
+#include "Animation.h"
+#include "TileSet.h"
 
 // ---------------------------------------------------------------------------------
 
@@ -29,7 +30,9 @@ public:
     void Draw();
 
 private:
-    Sprite* sprite;
+    TileSet* ts;
+    Animation* anim;
+    uint seq[9] = { 0,1,2,3,4,5,6,7,8 };
     float currentRadius;
     float maxRadius;
     float expansionSpeed;

@@ -14,7 +14,8 @@
 // ---------------------------------------------------------------------------------
 
 #include "Object.h"
-#include "Sprite.h"
+#include "Animation.h"
+#include "TileSet.h"
 #include "Timer.h"
 
 // ---------------------------------------------------------------------------------
@@ -30,7 +31,9 @@ public:
     void Draw();
 
 private:
-    Sprite* sprite;
+    TileSet* ts;
+    Animation* anim;
+    uint seq[4] = { 0,1,2,3 };
     Timer lifeTimer;
     int damage = 2;
 };

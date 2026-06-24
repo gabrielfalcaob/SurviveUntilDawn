@@ -48,9 +48,26 @@ Player::Player()
     animRun->Select(0);
     animAttack->Select(0);
 
+    // carrega as variantes para direcao esquerda
+    tsIdleLeft = new TileSet("Resources/Warrior_Idle_Esq.png", 85, 91, 8, 8);
+    tsRunLeft = new TileSet("Resources/Warrior_Run_Esq.png", 95, 93, 6, 6);
+    tsAttackLeft = new TileSet("Resources/Warrior_Attack1_Esq.png", 122, 106, 4, 4);
+
+    animIdleLeft = new Animation(tsIdleLeft, 0.100f, true);
+    animRunLeft = new Animation(tsRunLeft, 0.080f, true);
+    animAttackLeft = new Animation(tsAttackLeft, 0.080f, false);
+
+    animIdleLeft->Add(0, seqIdle, 8);
+    animRunLeft->Add(0, seqRun, 6);
+    animAttackLeft->Add(0, seqAtk, 4);
+
+    animIdleLeft->Select(0);
+    animRunLeft->Select(0);
+    animAttackLeft->Select(0);
+
     currentAnim = animIdle;
 
-    missile = new Image("Resources/FireBall.png");
+    missile = new Image("Resources/Rock1.png");
     speed.RotateTo(90.0f);
     speed.ScaleTo(0.0f);
     BBox(new Circle(18.0f));
@@ -96,9 +113,15 @@ Player::~Player()
     delete animIdle;
     delete animRun;
     delete animAttack;
+    delete animIdleLeft;
+    delete animRunLeft;
+    delete animAttackLeft;
     delete tsIdle;
     delete tsRun;
     delete tsAttack;
+    delete tsIdleLeft;
+    delete tsRunLeft;
+    delete tsAttackLeft;
     delete missile;
     delete tail;
     delete gamepad;
@@ -182,7 +205,7 @@ void Player::TakeDamage(int amount)
 
     if (hp <= 0)
     {
-        // TODO: Game Over trigger
+        isDead = true;
         hp = 0;
     }
 }
@@ -325,6 +348,29 @@ void Player::Update()
     }
 
     // -----------------
+    // Arremesso Direcional (Teclas de Seta)
+    // -----------------
+
+    throwTimer -= gameTime;
+
+    float throwDirX = 0.0f, throwDirY = 0.0f;
+    if (throwTimer <= 0.0f)
+    {
+        if (window->KeyDown(VK_UP))    throwDirY = -1.0f;
+        if (window->KeyDown(VK_DOWN))  throwDirY = 1.0f;
+        if (window->KeyDown(VK_LEFT))  throwDirX = -1.0f;
+        if (window->KeyDown(VK_RIGHT)) throwDirX = 1.0f;
+
+        if (throwDirX != 0.0f || throwDirY != 0.0f)
+        {
+            float ang = Line::Angle(Point(0, 0), Point(throwDirX, throwDirY));
+            SurviveUntilDawn::audio->Play(FIRE);
+            SurviveUntilDawn::scene->Add(new Missile(ang), STATIC);
+            throwTimer = throwCooldown * attackSpeedMultiplier;
+        }
+    }
+
+    // -----------------
     // God Mode
     // -----------------
 
@@ -393,9 +439,9 @@ void Player::Update()
     // -----------------
 
     if (speed.XComponent() > 0.1f)
-        facingRight = true;
+        isFacingLeft = false;
     else if (speed.XComponent() < -0.1f)
-        facingRight = false;
+        isFacingLeft = true;
 
     if (state == ATTACK)
     {
@@ -404,26 +450,27 @@ void Player::Update()
     }
     else
     {
-        if (attackTimer.Elapsed(attackCooldown))
+        if (attackTimer.Elapsed(attackCooldown * attackSpeedMultiplier))
         {
             attackTimer.Start();
             animLockTimer.Start();
             state = ATTACK;
-            currentAnim = animAttack;
+            currentAnim = isFacingLeft ? animAttackLeft : animAttack;
             animAttack->Restart();
+            animAttackLeft->Restart();
 
-            float slashAngle = facingRight ? 0.0f : 180.0f;
+            float slashAngle = isFacingLeft ? 180.0f : 0.0f;
             SurviveUntilDawn::scene->Add(new SwordSlash(x, y, slashAngle, cleaveLevel), MOVING);
         }
         else if (speed.Magnitude() > 0.1f)
         {
             state = RUN;
-            currentAnim = animRun;
+            currentAnim = isFacingLeft ? animRunLeft : animRun;
         }
         else
         {
             state = IDLE;
-            currentAnim = animIdle;
+            currentAnim = isFacingLeft ? animIdleLeft : animIdle;
         }
     }
 
@@ -475,7 +522,7 @@ void Player::TriggerLevelUpScreen()
     std::cout << "          LEVEL UP!            \n";
     std::cout << " Escolha seu poder no teclado: \n";
     std::cout << " [1] Orbital (Bola de Fogo)    \n";
-    std::cout << " [2] Velocidade de Movimento   \n";
+    std::cout << " [2] Velocidade (Mov+Atq)   \n";
     std::cout << " [3] Aumentar Raio do Ima      \n";
     std::cout << " [4] Lance do Corte            \n";
     std::cout << " [5] Onda de Choque (Tecla R)   \n";
@@ -514,6 +561,8 @@ void Player::ApplyPowerUp(int powerId)
     else if (powerId == 2)
     {
         speedBonus += 0.05f;
+        attackSpeedMultiplier -= 0.05f;
+        if (attackSpeedMultiplier < 0.2f) attackSpeedMultiplier = 0.2f;
     }
     else if (powerId == 3)
     {

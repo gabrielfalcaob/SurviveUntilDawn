@@ -14,7 +14,7 @@
 
 // ---------------------------------------------------------------------------------
 
-HealthDrop::HealthDrop(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Orange.png"))
+HealthDrop::HealthDrop(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Meat Resource.png"))
 {
     type = HEALTHDROP;
     BBox(new Circle(10.0f));
@@ -31,6 +31,7 @@ HealthDrop::~HealthDrop()
 void HealthDrop::OnCollect()
 {
     SurviveUntilDawn::audio->Play(HEAL);
+    SurviveUntilDawn::player->totalFoodCollected++;
     SurviveUntilDawn::player->Heal(1);
 }
 

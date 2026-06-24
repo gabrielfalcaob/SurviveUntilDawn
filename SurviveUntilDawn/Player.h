@@ -44,20 +44,28 @@ private:
     Animation * animAttack;             // animacao ataque
     Animation * currentAnim;            // animacao atual
 
+    // variantes para direcao esquerda
+    TileSet * tsIdleLeft;
+    TileSet * tsRunLeft;
+    TileSet * tsAttackLeft;
+    Animation * animIdleLeft;
+    Animation * animRunLeft;
+    Animation * animAttackLeft;
+
     uint seqIdle[8] = { 0,1,2,3,4,5,6,7 };     // sequencia idle
     uint seqRun[6] = { 0,1,2,3,4,5 };          // sequencia corrida
     uint seqAtk[4] = { 0,1,2,3 };              // sequencia ataque
 
     PlayerState state = IDLE;               // estado atual do jogador
-    bool facingRight = true;                // jogador virado direita
+    bool isFacingLeft = false;              // jogador virado esquerda
 
     Timer attackTimer;                  // timer do ataque automatico
     float attackCooldown = 1.5f;        // cooldown entre ataques
     Timer animLockTimer;                // timer de travamento da animacao
     float attackDuration = 0.4f;        // duracao da animacao de ataque
 
-    int hp = 5;                         // vida atual
-    int maxHp = 10;                     // vida maxima
+    int hp = 10;                         // vida atual
+    int maxHp = 30;                     // vida maxima
     bool isImmortal = false;            // modo Deus ativo
     Timer invulnTimer;                  // timer de invulnerabilidade
     float invulnTime = 1.0f;            // duracao da invulnerabilidade
@@ -82,6 +90,9 @@ private:
     int lightningLevel = 0;             // nivel da Bencao da Sorte
     Timer lightningTimer;               // timer de cooldown dos raios
 
+    float throwCooldown = 3.5f;         // cooldown base do arremesso
+    float throwTimer = 1.0f;            // timer atual do arremesso
+
 public:
     static Image * missile;             // imagem do missil
     Vector speed;                       // velocidade e direcao de movimento
@@ -96,6 +107,12 @@ public:
     float globalDamageMultiplier = 1.0f; // multiplicador global de dano
     float damageTakenMultiplier = 1.0f;  // multiplicador de dano recebido (armadura)
     float xpMultiplier = 1.0f;           // multiplicador de XP
+    float attackSpeedMultiplier = 1.0f;  // multiplicador de velocidade de ataque (menor = mais rapido)
+
+    // estatisticas da partida
+    int totalXpCollected = 0;           // orbes de XP coletadas
+    int totalFoodCollected = 0;         // comidas coletadas
+    bool isDead = false;                // jogador morreu
 
     Player();                           // construtor
     ~Player();                          // destrutor
@@ -123,6 +140,7 @@ public:
     int GetShockwaveLevel() { return shockwaveLevel; }
     float GetLightningTime() { return lightningTimer.Elapsed(); }
     float GetShockwaveTime() { return shockwaveTimer.Elapsed(); }
+    bool IsFacingLeft() const { return isFacingLeft; }
 };
 // ---------------------------------------------------------------------------------
 

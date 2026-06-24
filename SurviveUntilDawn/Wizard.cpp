@@ -29,9 +29,9 @@ Wizard::Wizard(float pX, float pY, Player* p)
 {
     player = p;
 
-    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    tsRun = new TileSet("Resources/Archer.png", 75, 92, 4, 4);
     animRun = new Animation(tsRun, 0.100f, true);
-    animRun->Add(0, seqRun, 6);
+    animRun->Add(0, seqRun, 4);
     animRun->Select(0);
 
     BBox(new Circle(20.0f));

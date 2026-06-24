@@ -35,6 +35,7 @@ private:
     int index;
     Particles* tail = nullptr;
     Timer damageTimer;
+    float fireTrailTimer = 0.0f;
 };
 
 // ---------------------------------------------------------------------------------

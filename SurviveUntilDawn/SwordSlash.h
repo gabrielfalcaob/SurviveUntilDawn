@@ -23,6 +23,7 @@ class SwordSlash : public Object
 {
 private:
     Timer lifeTimer;                            // tempo de vida do hitbox
+    int cleaveLevel;                            // nivel do corte para escala
 
 public:
     SwordSlash(float startX, float startY, float angle, int cleaveLevel);

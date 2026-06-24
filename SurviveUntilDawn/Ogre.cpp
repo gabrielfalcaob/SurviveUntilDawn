@@ -26,9 +26,9 @@
 
 Ogre::Ogre(float pX, float pY, float ang)
 {
-    tsRun = new TileSet("Resources/Pawn_Run Axe.png", 79, 79, 6, 6);
+    tsRun = new TileSet("Resources/Monk.png", 84, 73, 4, 4);
     animRun = new Animation(tsRun, 0.100f, true);
-    animRun->Add(0, seqRun, 6);
+    animRun->Add(0, seqRun, 4);
     animRun->Select(0);
 
     BBox(new Circle(20.0f));
@@ -41,18 +41,18 @@ Ogre::Ogre(float pX, float pY, float ang)
 
     // configuração do emissor de partículas
     Generator emitter;
-    emitter.imgFile = "Resources/Spark.png";
-    emitter.angle = speed.Angle() + 180;
-    emitter.spread = 5;
-    emitter.lifetime = 0.4f;
-    emitter.frequency = 0.010f;
-    emitter.percentToDim = 0.8f;
-    emitter.minSpeed = 100.0f;
-    emitter.maxSpeed = 200.0f;
-    emitter.color.r = 1.0f;
-    emitter.color.g = 0.5f;
+    emitter.imgFile = "Resources/nonexistentDust_01.png";
+    emitter.angle = 180.0f;
+    emitter.spread = 1;
+    emitter.lifetime = 0.2f;
+    emitter.frequency = 0.005f;
+    emitter.percentToDim = 0.2f;
+    emitter.minSpeed = 50.0f;
+    emitter.maxSpeed = 70.0f;
+    emitter.color.r = 0.0f;
+    emitter.color.g = 0.0f;
     emitter.color.b = 0.0f;
-    emitter.color.a = 1.0f;
+    emitter.color.a = 0.0f;
 
     tail = new Particles(emitter);
     tailCount = 0;

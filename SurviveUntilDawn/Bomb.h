@@ -14,13 +14,19 @@
 // ---------------------------------------------------------------------------------
 
 #include "Pickup.h"
+#include "Animation.h"
+#include "TileSet.h"
 
 // ---------------------------------------------------------------------------------
 
 class Bomb : public Pickup
 {
 private:
-    bool isExploding = false;           // bomba est� explodindo
+    bool isExploding = false;           // bomba esta explodindo
+    TileSet* expTS;
+    Animation* expAnim;
+    uint expSeq[11] = { 0,1,2,3,4,5,6,7,8,9,10 };
+    float explX = 0.0f, explY = 0.0f;
 
 public:
     Bomb(float pX, float pY);           // construtor

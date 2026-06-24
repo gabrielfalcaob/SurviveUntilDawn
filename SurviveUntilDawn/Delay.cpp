@@ -21,7 +21,6 @@
 
 Delay::Delay()
 {
-    logo = new Sprite("Resources/Logo.png");
     timer.Start();
 
     notPlayed = true;
@@ -35,7 +34,6 @@ Delay::Delay()
 
 Delay::~Delay()
 {
-    delete logo;
 }
 
 // -------------------------------------------------------------------------------
@@ -82,8 +80,6 @@ void Delay::Update()
 
 void Delay::Draw()
 {
-    if (!fase1)
-        logo->Draw(game->viewport.left + window->CenterX() , game->viewport.top + window->CenterY(), Layer::FRONT);
 }
 
 // -------------------------------------------------------------------------------

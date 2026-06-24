@@ -14,7 +14,7 @@
 
 // ---------------------------------------------------------------------------------
 
-Magnet::Magnet(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Blue.png"))
+Magnet::Magnet(float pX, float pY) : Pickup(pX, pY, new Sprite("Resources/Magnet.png"))
 {
     type = MAGNET;
     BBox(new Circle(10.0f));

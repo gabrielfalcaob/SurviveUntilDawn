@@ -272,6 +272,7 @@
     <ClCompile Include="SwordSlash.cpp" />
     <ClCompile Include="Shockwave.cpp" />
     <ClCompile Include="Lightning.cpp" />
+    <ClCompile Include="TrailFire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -310,6 +311,7 @@
     <ClInclude Include="SwordSlash.h" />
     <ClInclude Include="Shockwave.h" />
     <ClInclude Include="Lightning.h" />
+    <ClInclude Include="TrailFire.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileSet.h" />

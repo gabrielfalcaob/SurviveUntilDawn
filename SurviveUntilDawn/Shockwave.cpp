@@ -28,14 +28,18 @@ Shockwave::Shockwave(float startX, float startY, int level)
     expansionSpeed = 200.0f;
 
     BBox(new Circle(currentRadius));
-    sprite = new Sprite("Resources/Explo.png");
+    ts = new TileSet("Resources/Explosion_01.png", 170, 192, 9, 9);
+    anim = new Animation(ts, 0.08f, false);
+    anim->Add(0, seq, 9);
+    anim->Select(0);
 }
 
 // ---------------------------------------------------------------------------------
 
 Shockwave::~Shockwave()
 {
-    delete sprite;
+    delete anim;
+    delete ts;
 }
 
 // ---------------------------------------------------------------------------------
@@ -80,6 +84,8 @@ void Shockwave::OnCollision(Object* obj)
 
 void Shockwave::Update()
 {
+    anim->NextFrame();
+
     // expande o raio
     currentRadius += expansionSpeed * gameTime;
 
@@ -97,8 +103,8 @@ void Shockwave::Update()
 
 void Shockwave::Draw()
 {
-    float scale = (currentRadius * 2.0f) / sprite->Width();
-    sprite->Draw(x, y, Layer::UPPER, scale, 0.0f);
+    float scale = (currentRadius * 2.0f) / 170.0f;
+    anim->Draw(x, y, Layer::UPPER, scale, 0.0f);
 }
 
 // ---------------------------------------------------------------------------------

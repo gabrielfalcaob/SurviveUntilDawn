@@ -9,9 +9,12 @@
 **********************************************************************************/
 
 #include <ctime>
+#include <cmath>
 #include "SurviveUntilDawn.h"
 #include "Spawner.h"
 #include "Goblin.h"
+#include "Ogre.h"
+#include "Wizard.h"
 
 // ---------------------------------------------------------------------------------
 
@@ -46,7 +49,16 @@ void Spawner::Update()
         float dist = 600.0f;
         float sx = playerRef->X() + cos(angle) * dist;
         float sy = playerRef->Y() + sin(angle) * dist;
-        SurviveUntilDawn::scene->Add(new Goblin(sx, sy, playerRef), MOVING);
+        int roll = rand() % 100;
+        if (roll < 60)
+            SurviveUntilDawn::scene->Add(new Goblin(sx, sy, playerRef), MOVING);
+        else if (roll < 85)
+            SurviveUntilDawn::scene->Add(new Wizard(sx, sy, playerRef), MOVING);
+        else
+        {
+            float ogreAng = Line::Angle(Point(sx, sy), Point(playerRef->X(), playerRef->Y()));
+            SurviveUntilDawn::scene->Add(new Ogre(sx, sy, ogreAng), MOVING);
+        }
         spawnTimer.Start();
     }
 

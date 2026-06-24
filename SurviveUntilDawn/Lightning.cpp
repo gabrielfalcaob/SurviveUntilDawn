@@ -23,7 +23,10 @@ Lightning::Lightning(float startX, float startY)
     type = LIGHTNING;
 
     BBox(new Circle(20.0f));
-    sprite = new Sprite("Resources/Explo.png");
+    ts = new TileSet("Resources/Lightning.png", 64, 64, 4, 4);
+    anim = new Animation(ts, 0.05f, false);
+    anim->Add(0, seq, 4);
+    anim->Select(0);
     lifeTimer.Start();
 }
 
@@ -31,7 +34,8 @@ Lightning::Lightning(float startX, float startY)
 
 Lightning::~Lightning()
 {
-    delete sprite;
+    delete anim;
+    delete ts;
 }
 
 // ---------------------------------------------------------------------------------
@@ -74,7 +78,8 @@ void Lightning::OnCollision(Object* obj)
 
 void Lightning::Update()
 {
-    if (lifeTimer.Elapsed(0.25f))
+    anim->NextFrame();
+    if (anim->Inactive())
     {
         SurviveUntilDawn::scene->Delete(this, MOVING);
     }
@@ -84,7 +89,7 @@ void Lightning::Update()
 
 void Lightning::Draw()
 {
-    sprite->Draw(x, y, Layer::FRONT, 0.5f, 0.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
+    anim->Draw(x, y, Layer::FRONT, 1.0f, 0.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
 }
 
 // ---------------------------------------------------------------------------------

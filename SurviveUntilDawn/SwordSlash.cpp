@@ -20,18 +20,16 @@
 
 SwordSlash::SwordSlash(float startX, float startY, float angle, int cleaveLevel)
 {
+    this->cleaveLevel = cleaveLevel;
+
     MoveTo(startX, startY);
-
-    // deslocamento frontal baseado no angulo e nivel do cleave
-    float offset = 30.0f + (cleaveLevel * 10.0f);
-    float rad = angle * 3.14159f / 180.0f;
-    Translate(cos(rad) * offset, -sin(rad) * offset);
-
-    // raio da hitbox escala com o nivel do cleave
-    float hitRadius = 25.0f + (cleaveLevel * 15.0f);
-    BBox(new Circle(hitRadius));
     type = SWORDSLASH;
     lifeTimer.Start();
+
+    // hitbox retangular (largura e altura escalam com o nivel)
+    float hw = 25.0f + (cleaveLevel * 5.0f);   // meia largura
+    float hh = 35.0f + (cleaveLevel * 5.0f);   // meia altura
+    BBox(new Rect(-hw, -hh, hw, hh));
 }
 
 // ---------------------------------------------------------------------------------
@@ -68,7 +66,17 @@ void SwordSlash::OnCollision(Object* obj)
 
 void SwordSlash::Update()
 {
-    // auto-destroi apos 0.15s; o engine remove com seguranca durante a iteracao MOVING
+    Player* p = SurviveUntilDawn::player;
+
+    // deslocamento frontal baseado na direcao do jogador
+    float offsetX = 40.0f + (cleaveLevel * 8.0f);
+    if (p->IsFacingLeft())
+        offsetX = -offsetX;
+
+    // segue o jogador a cada frame com o offset direcional
+    MoveTo(p->X() + offsetX, p->Y());
+
+    // auto-destroi apos 0.15s
     if (lifeTimer.Elapsed(0.15f))
         SurviveUntilDawn::scene->Delete(this, MOVING);
 }

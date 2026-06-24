@@ -13,6 +13,7 @@
 #include "SurviveUntilDawn.h"
 #include "Sprite.h"
 #include "Ogre.h"
+#include "TrailFire.h"
 #include <cmath>
 
 // ---------------------------------------------------------------------------------
@@ -68,6 +69,14 @@ void Orbital::Update()
     float px = playerRef->X() + cos(myAngle) * playerRef->orbitalRadius;
     float py = playerRef->Y() + sin(myAngle) * playerRef->orbitalRadius;
     MoveTo(px, py);
+
+    // rastro de fogo continuo
+    fireTrailTimer -= gameTime;
+    if (fireTrailTimer <= 0.0f)
+    {
+        SurviveUntilDawn::scene->Add(new TrailFire(x, y), MOVING);
+        fireTrailTimer = 0.05f;
+    }
 
     tail->Generate(x, y);
     tail->Update(gameTime);

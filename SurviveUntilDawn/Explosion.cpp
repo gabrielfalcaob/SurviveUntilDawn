@@ -31,9 +31,19 @@ Explosion::Explosion(float pX, float pY)
     explosion.percentToDim = 0.8f;                  // desaparece após 60% da vida
     explosion.minSpeed  = 25.0f;                    // velocidade mínima das partículas
     explosion.maxSpeed  = 250.0f;                   // velocidade máxima das partículas
-    explosion.color.r   = color.Rand();             // cor da partícula entre 0 e 1
-    explosion.color.g   = color.Rand();             // cor da partícula entre 0 e 1
-    explosion.color.b   = color.Rand();             // cor da partícula entre 0 e 1
+    // 50% Vermelho, 50% Preto
+    if (color.Rand() > 0.5f)
+    {
+        explosion.color.r = 1.0f;
+        explosion.color.g = 0.0f;
+        explosion.color.b = 0.0f;
+    }
+    else
+    {
+        explosion.color.r = 0.0f;
+        explosion.color.g = 0.0f;
+        explosion.color.b = 0.0f;
+    }
     explosion.color.a   = 1.0f;                     // transparência da partícula
 
     // cria sistema de partículas

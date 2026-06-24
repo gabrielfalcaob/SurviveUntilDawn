@@ -1,11 +1,11 @@
 /**********************************************************************************
-// Delay (Arquivo de Cabeçalho)
+// Delay (Arquivo de Cabeï¿½alho)
 //
-// Criação:     02 Ago 2019
-// Atualização: 11 Nov 2021
+// Criaï¿½ï¿½o:     02 Ago 2019
+// Atualizaï¿½ï¿½o: 11 Nov 2021
 // Compilador:  Visual C++ 2022
 //
-// Descrição:   Sincroniza uma ação
+// Descriï¿½ï¿½o:   Sincroniza uma aï¿½ï¿½o
 //
 **********************************************************************************/
 
@@ -23,10 +23,9 @@
 class Delay : public Object
 {
 private:
-    Sprite * logo;          // logotipo do jogo
     Timer timer;            // medidor de tempo
     
-    bool notPlayed;         // intro não tocada ainda
+    bool notPlayed;         // intro nï¿½o tocada ainda
     bool fase1;             // fase 1 completada
     bool fase2;             // fase 2 completada
     bool fase3;             // fase 3 completada
@@ -36,7 +35,7 @@ public:
     Delay();                // construtor
     ~Delay();               // destrutor
 
-    void Update();          // atualização
+    void Update();          // atualizaï¿½ï¿½o
     void Draw();            // desenho
 };
 

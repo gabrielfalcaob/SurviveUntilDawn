@@ -21,6 +21,8 @@
 #include "Player.h"
 #include "Hud.h"
 #include "Font.h"
+#include "TileSet.h"
+#include "Animation.h"
 
 // ------------------------------------------------------------------------------
 
@@ -34,6 +36,8 @@ enum Ids
 
 // ------------------------------------------------------------------------------
 
+enum class GameState { MENU, PLAYING, GAMEOVER };
+
 class SurviveUntilDawn : public Game
 {
 private:
@@ -41,6 +45,18 @@ private:
     Hud * hud = nullptr;            // heads up display
     bool viewBBox = false;          // visualiza��o das bouding boxes
     Font * fontUI = nullptr;        // fonte para a tela de level up
+
+    // recursos do menu inicial
+    TileSet* menuPlayerTS = nullptr;
+    TileSet* menuPawnTS = nullptr;
+    Animation* menuPlayerRun = nullptr;
+    Animation* menuPawnRun = nullptr;
+    Sprite* menuLogo = nullptr;
+    float blinkTimer = 0.0f;
+    float timeSurvived = 0.0f;            // tempo sobrevivido na partida
+
+    GameState currentState = GameState::MENU;
+
     Sprite* iconPower1 = nullptr;   // Orbital
     Sprite* iconPower2 = nullptr;   // Velocidade
     Sprite* iconPower3 = nullptr;   // Ima

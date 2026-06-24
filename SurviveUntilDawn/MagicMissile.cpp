@@ -17,7 +17,7 @@
 
 MagicMissile::MagicMissile(float startX, float startY, float targetX, float targetY)
 {
-    sprite = new Sprite("Resources/Orange.png");
+    sprite = new Sprite("Resources/Arrow.png");
 
     // calcula direção normalizada do ponto inicial ao alvo
     float dirX = targetX - startX;
