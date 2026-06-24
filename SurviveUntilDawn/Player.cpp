@@ -1,3 +1,4 @@
+// -------------------------------------------------------------------------------
 /**********************************************************************************
 // Player (Codigo Fonte)
 //
@@ -461,6 +462,7 @@ void Player::Draw()
 
 void Player::LevelUp()
 {
+    SurviveUntilDawn::audio->Play(LEVEL_UP);
     TriggerLevelUpScreen();
 }
 

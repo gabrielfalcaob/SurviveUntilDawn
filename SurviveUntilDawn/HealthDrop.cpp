@@ -30,6 +30,7 @@ HealthDrop::~HealthDrop()
 
 void HealthDrop::OnCollect()
 {
+    SurviveUntilDawn::audio->Play(HEAL);
     SurviveUntilDawn::player->Heal(1);
 }
 
