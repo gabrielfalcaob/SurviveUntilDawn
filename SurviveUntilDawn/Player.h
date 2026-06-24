@@ -115,6 +115,14 @@ public:
     void LevelUp();                     // sobe de nivel
     void TriggerLevelUpScreen();        // tela de selecao de poder
     void ApplyPowerUp(int powerId);     // aplica o poder escolhido
+
+    // getters para o Hud
+    int GetHp() { return hp; }
+    int GetMaxHp() { return maxHp; }
+    int GetLightningLevel() { return lightningLevel; }
+    int GetShockwaveLevel() { return shockwaveLevel; }
+    float GetLightningTime() { return lightningTimer.Elapsed(); }
+    float GetShockwaveTime() { return shockwaveTimer.Elapsed(); }
 };
 // ---------------------------------------------------------------------------------
 

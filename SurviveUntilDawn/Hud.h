@@ -17,6 +17,7 @@
 #include "Object.h"
 #include "Sprite.h"
 #include "Font.h"
+#include "Player.h"
 #include <sstream>
 using std::stringstream;
 
@@ -27,7 +28,6 @@ class Hud : public Object
 private:
     Font * font = nullptr;              // fonte para exibi��o normal
     Font * bold = nullptr;              // fonte para exibi��o negrito
-    Sprite * infoBox = nullptr;         // �rea de informa��es do jogo
 
     stringstream text;                  // texto tempor�rio
     uint frameCount;                    // contador de quadros por segundo
@@ -35,6 +35,7 @@ private:
     uint fps;                           // valor para exibi��o do fps
 
 public:
+    Player* playerRef = nullptr;        // referencia para o jogador
     static uint missiles;               // n�mero de m�sseis na tela
     static uint ogres;                  // n�mero de ogros
     static uint goblins;                // n�mero de goblins
@@ -50,6 +51,7 @@ public:
 
     void Update();                      // atualiza��o
     void Draw();                        // desenho
+    void OnCollision(Object* obj) {}    // colisao (vazio, apenas para garantir a interface)
 };
 
 // ------------------------------------------------------------------------------

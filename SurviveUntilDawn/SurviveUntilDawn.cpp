@@ -67,6 +67,7 @@ void SurviveUntilDawn::Init()
     player  = new Player();
     scene   = new Scene();
     hud     = new Hud();
+    hud->playerRef = player;
 
     // inicializa fonte e �cones para a tela de level up
     fontUI = new Font("Resources/Tahoma14.png");
@@ -190,7 +191,11 @@ void SurviveUntilDawn::Draw()
     // desenha a cena
     scene->Draw();
 
-    // tela de level up quando o jogo est� pausado
+    // desenha o painel de informacao (HUD sempre por cima da cena)
+    if (hud)
+        hud->Draw();
+
+    // tela de level up quando o jogo estah pausado
     if (isGamePaused)
     {
         // Font::Draw usa coordenadas de TELA (screen space)
@@ -244,11 +249,7 @@ void SurviveUntilDawn::Draw()
         if (spr3) spr3->Draw(wx - 130, wy + 40, Layer::FRONT, 0.5f);
     }
 
-    // desenha o painel de informa��es
-    if (viewHUD)
-        hud->Draw();
-
-    // desenha bounding box
+    // desenha bounding box por ULTIMO (acima de sprites, HUD e level-up)
     if (viewBBox)
         scene->DrawBBox();
 }

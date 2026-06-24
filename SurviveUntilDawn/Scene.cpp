@@ -1,16 +1,16 @@
 /**********************************************************************************
-// Scene (Código Fonte)
+// Scene (Cï¿½digo Fonte)
 // 
-// Criação:     16 Mar 2012
-// Atualização: 28 Set 2023
+// Criaï¿½ï¿½o:     16 Mar 2012
+// Atualizaï¿½ï¿½o: 28 Set 2023
 // Compilador:  Visual C++ 2022
 //
-// Descrição:   Define uma classe para gerenciar o cenário do jogo.
+// Descriï¿½ï¿½o:   Define uma classe para gerenciar o cenï¿½rio do jogo.
 //
-//              Um gerenciador de cena é responsável por guardar os objetos
-//              da cena, atualizando-os e desenhando-os de forma mais prática.
-//              Ele pode ser usado também para outras tarefas que impliquem em
-//              percorrer a lista de objetos, como detecção de colisão.
+//              Um gerenciador de cena ï¿½ responsï¿½vel por guardar os objetos
+//              da cena, atualizando-os e desenhando-os de forma mais prï¿½tica.
+//              Ele pode ser usado tambï¿½m para outras tarefas que impliquem em
+//              percorrer a lista de objetos, como detecï¿½ï¿½o de colisï¿½o.
 //
 **********************************************************************************/
 
@@ -29,11 +29,11 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    // remove da memória os objetos estáticos
+    // remove da memï¿½ria os objetos estï¿½ticos
     for (auto obj : statics)
         delete obj;
 
-    // remove da memória os objetos em movimento
+    // remove da memï¿½ria os objetos em movimento
     for (auto obj : moving)
         delete obj;
 }
@@ -103,7 +103,7 @@ void Scene::ProcessDeleted()
 
     for (const auto & [obj, type] : toDelete)
     {
-        // libera memória ocupada pelo objeto
+        // libera memï¿½ria ocupada pelo objeto
         delete obj;
 
         // remove objeto da cena
@@ -121,7 +121,7 @@ void Scene::ProcessDeleted()
 
 void Scene::Update()
 {
-    // atualiza todos os objetos estáticos
+    // atualiza todos os objetos estï¿½ticos
     processing = STATIC;
     for (it = statics.begin(); it != statics.end(); ++it)
         (*it)->Update();
@@ -138,7 +138,7 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-    // desenha todos os objetos estáticos
+    // desenha todos os objetos estï¿½ticos
     processing = STATIC;
     for (it = statics.begin(); it != statics.end(); ++it)
         (*it)->Draw();
@@ -153,10 +153,13 @@ void Scene::Draw()
 
 void Scene::DrawBBox()
 {
-    // inicia desenho de pixels
+    // descarrega todos os sprites pendentes primeiro
+    Engine::renderer->Render();
+
+    // inicia desenho de pixels (renderiza por cima de tudo)
     Engine::renderer->BeginPixels();
 
-    // desenha bounding box dos objetos estáticos
+    // desenha bounding box dos objetos estï¿½ticos
     for (const auto& obj : statics)
     {
         if (obj->BBox())
@@ -196,10 +199,10 @@ void Scene::Begin()
 
 Object * Scene::Next()
 {
-    // se apontador aponta para objeto válido
+    // se apontador aponta para objeto vï¿½lido
     if (its != statics.end())
     {
-        // passa ao próximo objeto
+        // passa ao prï¿½ximo objeto
         // guarda apontador para o anterior
         it = its++;
         return *it;
@@ -220,11 +223,11 @@ Object * Scene::Next()
 
 bool Scene::Collision(Point* p, Point* q)
 {
-    // se as coordenadas inteiras são iguais 
+    // se as coordenadas inteiras sï¿½o iguais 
     if (int(p->X()) == int(q->X()) && int(p->Y()) == int(q->Y()))
         return true;
 
-    // caso contrário não há colisão
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
     return false;
 }
 
@@ -232,12 +235,12 @@ bool Scene::Collision(Point* p, Point* q)
 
 bool Scene::Collision(Point * p, Rect * r)
 {
-    // se as coordenadas  do ponto estão dentro do retângulo
+    // se as coordenadas  do ponto estï¿½o dentro do retï¿½ngulo
     if (p->X() >= r->Left() && p->X() <= r->Right())
         if (p->Y() >= r->Top() && p->Y() <= r->Bottom())
             return true;
 
-    // caso contrário não há colisão
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
     return false;
 }
 
@@ -245,8 +248,8 @@ bool Scene::Collision(Point * p, Rect * r)
 
 bool Scene::Collision(Point * p, Circle * c)
 {
-    // se a distância entre o ponto e o centro do círculo
-    // for menor que o raio do círculo então há colisão
+    // se a distï¿½ncia entre o ponto e o centro do cï¿½rculo
+    // for menor que o raio do cï¿½rculo entï¿½o hï¿½ colisï¿½o
     if (Point::Distance(*p, Point(c->CenterX(), c->CenterY())) <= c->Radius())
         return true;
     else
@@ -257,9 +260,9 @@ bool Scene::Collision(Point * p, Circle * c)
 
 bool Scene::Collision(Point* p, Poly* pol)
 {
-    // se o ponto colidir com a bounding box do polígono,
-    // passe para uma investigação mais profunda e lenta
-    // caso contrário não há colisão
+    // se o ponto colidir com a bounding box do polï¿½gono,
+    // passe para uma investigaï¿½ï¿½o mais profunda e lenta
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
 
     if (Collision(p, pol->BBox()))
     {
@@ -272,12 +275,12 @@ bool Scene::Collision(Point* p, Poly* pol)
         float Ixs, Iys, Jxs, Jys;
         const double PIunder180 = 0.0174532925194444;
 
-        // converte ângulo de rotação para radianos
+        // converte ï¿½ngulo de rotaï¿½ï¿½o para radianos
         float theta = float(pol->Rotation() * PIunder180);
 
         for (int i = 0, j = nvertex - 1; i < nvertex; j = i++)
         {
-            // aplica rotação aos pontos
+            // aplica rotaï¿½ï¿½o aos pontos
             Ixr = float(vertex[i].X() * cos(theta) - vertex[i].Y() * sin(theta));
             Iyr = float(vertex[i].X() * sin(theta) + vertex[i].Y() * cos(theta));
             Jxr = float(vertex[j].X() * cos(theta) - vertex[j].Y() * sin(theta));
@@ -310,13 +313,13 @@ bool Scene::Collision(Point* p, Poly* pol)
 
 bool Scene::Collision(Rect * ra, Rect * rb)
 {
-    // verificando sobreposição no eixo x
+    // verificando sobreposiï¿½ï¿½o no eixo x
     bool overlapX = (rb->Left() <= ra->Right() && ra->Left() <= rb->Right());
 
-    // verificando sobreposição no eixo y
+    // verificando sobreposiï¿½ï¿½o no eixo y
     bool overlapY = (rb->Top() <= ra->Bottom() && ra->Top() <= rb->Bottom());
 
-    // existe colisão se há sobreposição nos dois eixos
+    // existe colisï¿½o se hï¿½ sobreposiï¿½ï¿½o nos dois eixos
     return overlapX && overlapY;
 }
 
@@ -324,7 +327,7 @@ bool Scene::Collision(Rect * ra, Rect * rb)
 
 bool Scene::Collision(Rect * r, Circle * c)
 {
-    // encontra o ponto do retângulo mais próximo do centro do círculo
+    // encontra o ponto do retï¿½ngulo mais prï¿½ximo do centro do cï¿½rculo
     float px, py;
 
     // eixo x
@@ -345,7 +348,7 @@ bool Scene::Collision(Rect * r, Circle * c)
         else
             py = c->CenterY();
 
-    // verifica se há colisão entre este ponto e o círculo
+    // verifica se hï¿½ colisï¿½o entre este ponto e o cï¿½rculo
     Point point(px, py);
     return Collision(&point, c);
 }
@@ -354,13 +357,13 @@ bool Scene::Collision(Rect * r, Circle * c)
 
 bool Scene::Collision(Rect * r, Poly * pol)
 {
-    // se o retângulo colidir com a bounding box do polígono,
-    // passe para uma investigação mais profunda e lenta
-    // caso contrário não há colisão
+    // se o retï¿½ngulo colidir com a bounding box do polï¿½gono,
+    // passe para uma investigaï¿½ï¿½o mais profunda e lenta
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
 
     if (Collision(r, pol->BBox()))
     {
-        // recupera os cantos do retângulo
+        // recupera os cantos do retï¿½ngulo
         Point corners[4] =
         {
             Point(r->Left(), r->Top()),
@@ -369,27 +372,27 @@ bool Scene::Collision(Rect * r, Poly * pol)
             Point(r->Left(), r->Bottom())
         };
 
-        // verifica se algum canto do retângulo está dentro do polígono
+        // verifica se algum canto do retï¿½ngulo estï¿½ dentro do polï¿½gono
         for (int i = 0; i < 4; ++i)
             if (Collision(&corners[i], pol))
                 return true;
 
-        // recupera vértices do polígono
+        // recupera vï¿½rtices do polï¿½gono
         int nv = pol->vertexCount;
         Point * v = pol->vertexList;
 
-        // converte ângulo de rotação para radianos
+        // converte ï¿½ngulo de rotaï¿½ï¿½o para radianos
         const double PIunder180 = 0.0174532925194444;
         float theta = float(pol->Rotation() * PIunder180);
 
-        // verifica se algum vértice está dentro do retângulo
+        // verifica se algum vï¿½rtice estï¿½ dentro do retï¿½ngulo
         float pX, pY;
         float pXr, pYr;
         float pXs, pYs;
 
         for (int i = 0; i < nv; ++i)
         {
-            // aplica rotação aos pontos
+            // aplica rotaï¿½ï¿½o aos pontos
             pXr = float(v[i].X() * cos(theta) - v[i].Y() * sin(theta));
             pYr = float(v[i].X() * sin(theta) + v[i].Y() * cos(theta));
             
@@ -415,20 +418,20 @@ bool Scene::Collision(Rect * r, Poly * pol)
 
 bool Scene::Collision(Circle * ca, Circle * cb)
 {
-    // deltas podem ser negativos se a subtração é feita na ordem errada
-    // levando essa possibilidade em conta é melhor pegar os valores absolutos
+    // deltas podem ser negativos se a subtraï¿½ï¿½o ï¿½ feita na ordem errada
+    // levando essa possibilidade em conta ï¿½ melhor pegar os valores absolutos
     float deltaX = abs(ca->CenterX() - cb->CenterX());
     float deltaY = abs(ca->CenterY() - cb->CenterY());
 
-    // calcule a distância entre os centros dos círculos
+    // calcule a distï¿½ncia entre os centros dos cï¿½rculos
     float distance = float(sqrt(double(deltaX) * double(deltaX) + double(deltaY) * double(deltaY)));
 
-    // se a distância é menor que a soma dos raios
-    // existe colisão entre os círculos
+    // se a distï¿½ncia ï¿½ menor que a soma dos raios
+    // existe colisï¿½o entre os cï¿½rculos
     if (distance <= (ca->Radius() + cb->Radius()))
         return true;
 
-    // nenhum colisão detectada
+    // nenhum colisï¿½o detectada
     return false;
 }
 
@@ -436,31 +439,31 @@ bool Scene::Collision(Circle * ca, Circle * cb)
 
 bool Scene::Collision(Circle* c, Poly* pol)
 {
-    // se o círculo colidir com a bounding box do polígono,
-    // passe para uma investigação mais profunda e lenta
-    // caso contrário não há colisão
+    // se o cï¿½rculo colidir com a bounding box do polï¿½gono,
+    // passe para uma investigaï¿½ï¿½o mais profunda e lenta
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
 
     if (Collision(c, pol->BBox()))
     {
-        // recupera vértices do polígono
+        // recupera vï¿½rtices do polï¿½gono
         int nv = pol->vertexCount;
         Point * v = pol->vertexList;
 
-        // TODO: identificar o ponto do círculo mais próximo de cada aresta 
-        // e verificar se este ponto está dentro do polígono
+        // TODO: identificar o ponto do cï¿½rculo mais prï¿½ximo de cada aresta 
+        // e verificar se este ponto estï¿½ dentro do polï¿½gono
 
-        // converte ângulo de rotação para radianos
+        // converte ï¿½ngulo de rotaï¿½ï¿½o para radianos
         const double PIunder180 = 0.0174532925194444;
         float theta = float(pol->Rotation() * PIunder180);
 
-        // verifica se algum vértice está dentro do círculo
+        // verifica se algum vï¿½rtice estï¿½ dentro do cï¿½rculo
         float pX, pY;
         float pXr, pYr;
         float pXs, pYs;
 
         for (int i = 0; i < nv; ++i)
         {
-            // aplica rotação aos pontos
+            // aplica rotaï¿½ï¿½o aos pontos
             pXr = float(v[i].X() * cos(theta) - v[i].Y() * sin(theta));
             pYr = float(v[i].X() * sin(theta) + v[i].Y() * cos(theta));
 
@@ -488,12 +491,12 @@ bool Scene::Collision(Circle* c, Poly* pol)
 bool Scene::Collision(Poly* pa, Poly* pb)
 {
     // se as bounding boxes estiverem colidindo, 
-    // passe para uma investigação mais profunda e lenta
-    // caso contrário não há colisão
+    // passe para uma investigaï¿½ï¿½o mais profunda e lenta
+    // caso contrï¿½rio nï¿½o hï¿½ colisï¿½o
 
     if (Collision(pa->BBox(), pb->BBox()))
     {
-        // recupera vértices do polígono A
+        // recupera vï¿½rtices do polï¿½gono A
         int nva = pa->vertexCount;
         Point * va = pa->vertexList;
         
@@ -502,14 +505,14 @@ bool Scene::Collision(Poly* pa, Poly* pb)
         float pXs, pYs;
         float theta;
 
-        // converte ângulo de rotação para radianos
+        // converte ï¿½ngulo de rotaï¿½ï¿½o para radianos
         const double PIunder180 = 0.0174532925194444;
         theta = float(pa->Rotation() * PIunder180);
 
-        // verifica se vértices de A estão dentro do polígono B
+        // verifica se vï¿½rtices de A estï¿½o dentro do polï¿½gono B
         for (int i = 0; i < nva; ++i)
         {
-            // aplica rotação aos pontos
+            // aplica rotaï¿½ï¿½o aos pontos
             pXr = float(va[i].X() * cos(theta) - va[i].Y() * sin(theta));
             pYr = float(va[i].X() * sin(theta) + va[i].Y() * cos(theta));
 
@@ -527,17 +530,17 @@ bool Scene::Collision(Poly* pa, Poly* pb)
                 return true;
         }
 
-        // recupera vértices do polígono B
+        // recupera vï¿½rtices do polï¿½gono B
         int nvb = pb->vertexCount;
         Point * vb = pb->vertexList;
 
-        // converte ângulo de rotação para radianos
+        // converte ï¿½ngulo de rotaï¿½ï¿½o para radianos
         theta = float(pb->Rotation() * PIunder180);
 
-        // verifica se vértices de B estão dentro do polígono A
+        // verifica se vï¿½rtices de B estï¿½o dentro do polï¿½gono A
         for (int i = 0; i < nvb; ++i)
         {
-            // aplica rotação aos pontos
+            // aplica rotaï¿½ï¿½o aos pontos
             pXr = float(vb[i].X() * cos(theta) - vb[i].Y() * sin(theta));
             pYr = float(vb[i].X() * sin(theta) + vb[i].Y() * cos(theta));
 
@@ -565,7 +568,7 @@ bool Scene::Collision(Mixed * m, Geometry * s)
 {
     bool collision = false;
 
-    // percorra lista até achar uma colisão
+    // percorra lista atï¿½ achar uma colisï¿½o
     auto i = m->shapes.begin();
 
     while (!collision && i != m->shapes.end())
@@ -626,7 +629,7 @@ bool Scene::Collision(Mixed * m, Geometry * s)
             break;
         }
 
-        // passa para a próxima geometria da forma mista
+        // passa para a prï¿½xima geometria da forma mista
         ++i;
     }
 
@@ -637,7 +640,7 @@ bool Scene::Collision(Mixed * m, Geometry * s)
 
 bool Scene::Collision(Object* oa, Object* ob)
 {
-    // um dos objetos não tem bounding box
+    // um dos objetos nï¿½o tem bounding box
     if (!(oa->BBox() && ob->BBox()))
         return false;
 
@@ -782,21 +785,21 @@ void Scene::CollisionDetection()
     // iteradores para as listas
     list<Object*>::iterator start, end;
 
-    // limpa lista de colisões
+    // limpa lista de colisï¿½es
     collisions.clear();
 
     // -------------------
-    // Detecção da colisão
+    // Detecï¿½ï¿½o da colisï¿½o
     // -------------------
 
-    // se existe pelo menos dois objetos que se movem, teste a colisão entre eles
+    // se existe pelo menos dois objetos que se movem, teste a colisï¿½o entre eles
     if (moving.size() >= 2)
     {
-        // pega iterador para último elemento da lista
+        // pega iterador para ï¿½ltimo elemento da lista
         end = moving.end();
         end--;
 
-        // testa colisão entre todos os pares de objetos que se movem
+        // testa colisï¿½o entre todos os pares de objetos que se movem
         for (auto i = moving.begin(); i != end; ++i)
         {
             start = i;
@@ -810,7 +813,7 @@ void Scene::CollisionDetection()
         }
     }
 
-    // testa colisão entre objetos que se movem e objetos estáticos
+    // testa colisï¿½o entre objetos que se movem e objetos estï¿½ticos
     for (auto i : moving)
     {
         for (auto j : statics)
@@ -821,7 +824,7 @@ void Scene::CollisionDetection()
     }
 
     // --------------------
-    // Resolução da colisão
+    // Resoluï¿½ï¿½o da colisï¿½o
     // --------------------
 
     if (!collisions.empty())
